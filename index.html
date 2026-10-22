@@ -70,6 +70,9 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px 14px
       <div id="emOpts"></div>
       <div class="mut" style="margin:12px 0 6px">النموذج</div>
       <div id="pv" class="pv"></div>
+      <div class="mut" style="margin:16px 0 6px">الشركات</div>
+      <div class="row"><input id="compIn" placeholder="اسم الشركة"><button class="pri" onclick="addComp()">إضافة</button></div>
+      <div id="compList" class="chips"></div>
     </div>
   </div>
   <button class="pri big" onclick="newOrder()">➕ إنشاء أوردر جديد</button>
@@ -96,7 +99,7 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px 14px
   <div class="card">
     <label>المواد</label>
     <div id="items"></div>
-    <button class="sec" onclick="addItem()">+ إضافة مادة</button>
+    <div id="addBtns" class="chips"></div>
   </div>
 
   <div class="card">
@@ -119,6 +122,7 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px 14px
 </div>
 </div>
 <div class="sig">علي كريم : <a href="tel:07831698069" dir="ltr">07831698069</a></div>
+<div id="st2" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--card);border-top:1px solid var(--bd);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));gap:8px;align-items:center"><span style="flex:1">الخطوة 2: أرسل النص تحت الصورة (نفس المحادثة)</span><button class="tg" id="st2b">إرسال النص</button><button class="x" onclick="$('st2').style.display='none'">✕</button></div>
 <div id="toast"></div>
 
 <script>
@@ -179,7 +183,7 @@ function learn(o){remember('sug_pharm',o.pharm);o.dists.forEach(function(d){reme
 var STY={bold:['عريض','*','font-weight:700'],italic:['مائل','_','font-style:italic'],strike:['يتوسطه خط','~','text-decoration:line-through'],mono:['خط ثابت','```','font-family:monospace'],none:['عادي','','']};
 var NUM={num:'1.',enum:'1️⃣',dot:'•',check:'✅',blue:'🔹',pill:'💊',star:'⭐'};
 function numStr(k,i){if(k=='num')return (i+1)+'. ';if(k=='enum')return String(i+1).split('').map(function(d){return d+'\uFE0F\u20E3'}).join('')+' ';return NUM[k]+' '}
-var EMO={head:['العنوان',['🛒','📋','🧾','📦']],pharm:['الصيدلية',['🏥','💊','🏪','⚕️']],dist:['المذخر',['🏢','🚚','🏭','📍']],items:['المواد',['📦','💊','📋','🛍️']],note:['الملاحظة',['📝','💬','⚠️','📌']],date:['التاريخ',['📅','🕒','🗓️','⏰']]};
+var EMO={pharm:['الصيدلية',['🏥','💊','🏪','⚕️']],dist:['المذخر',['🏢','🚚','🏭','📍']],items:['المواد',['📦','💊','📋','🛍️']],note:['الملاحظة',['📝','💬','⚠️','📌']],date:['التاريخ',['📅','🕒','🗓️','⏰']]};
 function getSt(){var s=load('st',{}),em={};for(var k in EMO)em[k]=(s.em&&s.em[k])||EMO[k][1][0];return{num:s.num||'num',style:s.style||(s.bold===false?'none':'bold'),emoji:s.emoji!==false,date:s.date!==false,em:em}}
 function setOpt(k,v){var s=getSt();s[k]=v;save('st',s);renderSet()}
 function setEm(k,v){var s=getSt();s.em[k]=v;save('st',s);renderSet()}
@@ -195,7 +199,7 @@ function qs(x){var q=parseFloat(x.q),p=parseFloat(x.b);if(q>0&&p>0){var e=Math.f
 function text(o,h,pl){var S=getSt();if(pl)S.style='none';
   function b(s){var m=STY[S.style][1];if(!m)return s;if(h){var g={bold:'b',italic:'i',strike:'s',mono:'code'}[S.style];return '<'+g+'>'+s+'</'+g+'>'}return m+s+m}
   function e(k){return S.emoji?S.em[k]+' ':''}
-  var t=e('head')+b('طلبية جديدة')+'\n\n'+e('pharm')+b('الصيدلية:')+' '+o.pharm+'\n';
+  var t=e('pharm')+b('الصيدلية:')+' '+o.pharm+'\n';
   if(o.dists.length)t+=e('dist')+b('المذخر:')+' '+o.dists.join('، ')+'\n';
   t+='\n'+e('items')+b('المواد:')+'\n';o.items.forEach(function(x,i){t+=numStr(S.num,i)+x.n+(x.q?' — العدد: '+qs(x):'')+'\n'});
   if(o.note)t+='\n'+e('note')+b('ملاحظة:')+' '+o.note+'\n';
@@ -211,13 +215,23 @@ function share(o,app){
   if(o.img&&navigator.canShare){
     var f=dataToFile(o.img);
     if(navigator.canShare({files:[f]})){
-      navigator.share({files:[f],text:app=='wa'?t:plain}).then(function(){toast('اختر '+(app=='wa'?'واتساب':'تلجرام')+' من القائمة')}).catch(function(){});
+      navigator.share(app=='wa'?{files:[f],text:t}:{files:[f]}).then(function(){if(app=='wa')toast('اختر واتساب من القائمة');else showStep2(plain)}).catch(function(){});
       return}}
   if(o.img){var a=document.createElement('a');a.href=o.img;a.download='order.jpg';document.body.appendChild(a);a.click();a.remove();toast('تم تنزيل الصورة، أرفقها يدوياً في المحادثة')}
   var u;
   if(app=='wa'){u='https://wa.me/?text='+encodeURIComponent(t)}
   else u='https://t.me/share/url?url='+encodeURIComponent(' ')+'&text='+encodeURIComponent(plain);
   window.open(u,'_blank')}
+function showStep2(txt){$('st2').style.display='flex';$('st2b').onclick=function(){$('st2').style.display='none';if(navigator.share)navigator.share({text:txt}).catch(function(){});else window.open('https://t.me/share/url?url='+encodeURIComponent(' ')+'&text='+encodeURIComponent(txt),'_blank')}}
+function getComps(){return load('comps',[])}
+function addComp(){var v=$('compIn').value.trim();if(!v)return;var l=getComps();if(l.indexOf(v)<0){l.push(v);save('comps',l)}$('compIn').value='';renderComps()}
+function delComp(i){var l=getComps();l.splice(i,1);save('comps',l);renderComps()}
+function renderComps(){var l=getComps(),cl=$('compList'),ab=$('addBtns');cl.innerHTML='';ab.innerHTML='';
+  l.forEach(function(c,i){cl.appendChild(chip(c+' ✕',false,function(){delComp(i)}))});
+  function big(t,fn){var b=chip(t,false,fn);b.className='sec';b.style.padding='10px 16px';ab.appendChild(b)}
+  if(!l.length)big('+ إضافة مادة',function(){addItem()});
+  else l.forEach(function(c){big(c,function(){compItem(c)})})}
+function compItem(c){var rows=document.querySelectorAll('#items .row'),inp=rows[rows.length-1].querySelector('.in'),v=inp.value.trim();if(!v){toast('اكتب اسم المادة أولاً');return}inp.value=v+' -'+c;addItem();var n=document.querySelectorAll('#items .in');n[n.length-1].focus()}
 function sendWA(){share(collect(),'wa')}
 function sendTG(){share(collect(),'tg')}
 
@@ -235,6 +249,7 @@ function renderList(){var l=load('orders',[]);$('cnt').textContent=l.length?l.le
 
 suggest($('pharm'),'sug_pharm',3);
 renderSet();
+renderComps();
 renderList();
 </script>
 </body>
