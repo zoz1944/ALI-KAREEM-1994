@@ -51,6 +51,8 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px 14px
 .emr>div{display:flex;gap:4px}
 .emr .chip{padding:5px 8px}
 .pv{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:12px;white-space:pre-wrap;line-height:1.7;font-size:15px}
+.menu{display:block;width:100%;text-align:start;background:var(--card);border:1px solid var(--bd);color:var(--tx);padding:16px;margin-bottom:10px;font-size:17px}
+.fr{margin-bottom:14px}
 .sig{text-align:center;color:var(--mut);font-size:14px;margin:18px 0 8px}
 .sig a{color:var(--pri);text-decoration:none;font-weight:700}
 </style>
@@ -59,22 +61,7 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px 14px
 <div class="wrap">
 
 <div id="home">
-  <div class="top"><h1>📦 طلبيات المندوب</h1><button class="sec" onclick="toggleSet()">⚙️ الإعدادات</button></div>
-  <div class="card hide" id="set">
-    <b>إعدادات رسالة الإرسال</b>
-    <div style="margin-top:12px">
-      <div class="mut" style="margin-bottom:6px">تنسيق الخط</div><div id="styleOpts" class="chips" style="margin-bottom:14px"></div>
-      <label class="opt"><input type="checkbox" id="sEmoji" onchange="setOpt('emoji',this.checked)">إظهار الإيموجي</label>
-      <label class="opt"><input type="checkbox" id="sDate" onchange="setOpt('date',this.checked)">إظهار التاريخ</label>
-      <div class="mut" style="margin:4px 0 6px">ترقيم المواد</div><div id="numOpts" class="chips" style="margin-bottom:14px"></div>
-      <div id="emOpts"></div>
-      <div class="mut" style="margin:12px 0 6px">النموذج</div>
-      <div id="pv" class="pv"></div>
-      <div class="mut" style="margin:16px 0 6px">الشركات</div>
-      <div class="row"><input id="compIn" placeholder="اسم الشركة"><button class="pri" onclick="addComp()">إضافة</button></div>
-      <div id="compList" class="chips"></div>
-    </div>
-  </div>
+  <div class="top"><h1>📦 طلبيات المندوب</h1><button class="sec" onclick="go('sMenu')">⚙️ الإعدادات</button></div>
   <button class="pri big" onclick="newOrder()">➕ إنشاء أوردر جديد</button>
   <div class="card">
     <div class="top"><b>الطلبيات المحفوظة</b><span class="mut" id="cnt"></span></div>
@@ -103,7 +90,9 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px 14px
   </div>
 
   <div class="card">
-    <label>ملاحظة (اختياري)</label>
+    <label>بالتعاون مع (اختياري)</label>
+    <input id="coop" placeholder="اكتب الاسم إن وجد">
+    <label style="margin-top:12px">ملاحظة (اختياري)</label>
     <textarea id="note" rows="2"></textarea>
   </div>
 
@@ -111,6 +100,7 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px 14px
     <label>صورة للأوردر (اختياري)</label>
     <input type="file" id="img" accept="image/*" onchange="pickImg(this)">
     <img id="prev" alt="">
+    <button class="sec hide" id="ovBtn" style="margin-top:8px" onclick="openEd()">✏️ كتابة النص داخل الصورة</button>
     <button class="dng hide" id="rmImg" style="margin-top:8px" onclick="clearImg()">حذف الصورة</button>
   </div>
 
@@ -120,12 +110,59 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px 14px
     <button class="pri full" onclick="saveOrder()">💾 حفظ الطلبية</button>
   </div>
 </div>
+<div id="sMenu" class="hide">
+  <div class="top"><h1>⚙️ الإعدادات</h1><button class="sec" onclick="go('home')">رجوع</button></div>
+  <button class="menu" onclick="go('sFont')">🔤 تنسيق الخط</button>
+  <button class="menu" onclick="go('sNum')">🔢 ترقيم المواد</button>
+  <button class="menu" onclick="go('sEmoji')">😀 الإيموجي والتاريخ</button>
+  <button class="menu" onclick="go('sComp')">🏭 الشركات</button>
+</div>
+<div id="sFont" class="hide">
+  <div class="top"><h1>تنسيق الخط</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
+  <div class="card" id="fontOpts"></div>
+  <div class="mut" style="margin-bottom:6px">النموذج</div><div class="pv" id="pvF"></div>
+</div>
+<div id="sNum" class="hide">
+  <div class="top"><h1>ترقيم المواد</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
+  <div class="card"><div id="numOpts" class="chips"></div></div>
+  <div class="mut" style="margin-bottom:6px">النموذج</div><div class="pv" id="pvN"></div>
+</div>
+<div id="sEmoji" class="hide">
+  <div class="top"><h1>الإيموجي والتاريخ</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
+  <div class="card">
+    <label class="opt"><input type="checkbox" id="cbEmoji" onchange="setOpt('emoji',this.checked)">إظهار الإيموجي</label>
+    <label class="opt"><input type="checkbox" id="cbDate" onchange="setOpt('date',this.checked)">إظهار التاريخ</label>
+    <div id="emOpts"></div>
+  </div>
+  <div class="mut" style="margin-bottom:6px">النموذج</div><div class="pv" id="pvE"></div>
+</div>
+<div id="sComp" class="hide">
+  <div class="top"><h1>الشركات</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
+  <div class="card">
+    <div class="row"><input id="compIn" placeholder="اسم الشركة"><button class="pri" onclick="addComp()">إضافة</button></div>
+    <div id="compList" class="chips"></div>
+  </div>
+</div>
 </div>
 <div class="sig">علي كريم : <a href="tel:07831698069" dir="ltr">07831698069</a></div>
+<div id="ed" class="hide" style="position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;padding:calc(12px + env(safe-area-inset-top,0px)) 14px calc(20px + env(safe-area-inset-bottom,0px))">
+ <div style="max-width:560px;margin:0 auto">
+  <div class="top" style="margin-bottom:10px"><b>النص داخل الصورة</b><div><button class="sec" onclick="closeEd()">إلغاء</button> <button class="pri" onclick="applyEd()">تطبيق</button></div></div>
+  <canvas id="cv" style="width:100%;border-radius:10px;touch-action:none;background:#000"></canvas>
+  <div class="mut" style="margin:6px 0 12px">اسحب النص على الصورة لتحريكه</div>
+  <label>حجم النص</label><input type="range" id="edSize" min="1.5" max="8" step="0.1" oninput="edChg()">
+  <label style="margin-top:12px">النص (قابل للتعديل)</label><textarea id="edText" rows="8" oninput="edChg()"></textarea>
+  <label class="opt" style="margin-top:12px"><input type="checkbox" id="edCap" checked>إرسال وصف الطلبية أسفل الصورة أيضاً</label>
+  <div class="acts"><button class="sec" onclick="edRegen()">إعادة كتابة النص من الطلبية</button><button class="dng" onclick="removeOv()">إزالة النص من الصورة</button></div>
+ </div>
+</div>
 <div id="st2" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--card);border-top:1px solid var(--bd);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));gap:8px;align-items:center"><span style="flex:1">الخطوة 2: أرسل النص تحت الصورة (نفس المحادثة)</span><button class="tg" id="st2b">إرسال النص</button><button class="x" onclick="$('st2').style.display='none'">✕</button></div>
 <div id="toast"></div>
 
 <script>
+var DB={"ph":["لافندر","احمد البياتي","الاميرات","احمد جاسم يوسف","احمد كاظم الفرحاني","حيدر علي مهاوي","التعاونية","الثقة","العناية","الفرقدين","المستقبل","المنار","النسر","زهراء نعمة عبدالحسين","غالب البعاج","غصن الزيتون","فدك","كبسولة","لؤلؤة الدواء","محمد عبدالجليل الموسوي","مريم عماد عبيس","زهراء عبدالامير العبيدي","الشعبية","احمد اياد الوحاش","الفي","علي امير حسن","سجى جابر محمد","علي ثامر جبار","هدى علي عبيس","منار علاء عبد العباس","نور الهدى نعيم كريم","ايمان فاهم عبد الحسين","الرهف","الينبوع","باقر ابراهيم علي","ايات عبد المحسن جبار","دعاء شاكر ال عليوي","علي راضي فالح","نورالزهراء جمعة النصيري","الريماس","اسراء كاظم","السلمى","التسنيم","البادية","علي عبد الحسن","القطب","البدير النموذجية","لأجلك","وليد خالد رحمن","الاسكان","النهرين","الوالدين","الحره","علي سلمان جواد","نور الهدى قحطان","رسل محمد عبد الكاظم","اصل الدواء","حنين فلاح الطريحي","وئام سلام رهيف","علي محمد لفته","الجسم السليم","الحارثية","العطاء","عالم الدواء","هند عبدالامير هادي","الجزيرة","الغيمة","افياء محمد جاسم","رياض فالح الجليحاوي","الاء سرحان عبد","الحدباء","الديرة","المراد","المشهد","النسيم","اليسر","اور","حسنين الاسدي","خالد لهمود ياسين","دعاء الكعبي","زينب عبدالزهرة الخفاجي","سرى علي الموسوي","قتيبة محمد صادق","ماجدة ناصر محسن","الميزان","نيريمان عثمان","اشم معن مهدي","الكوكب","الزهور","المدى","دعاء ناظم ذياب","ايمان كوز بدن","فاطمة فليح البولاني","الوحدة","علي حسن حبيب","المصباح","وصفتي","احسان السوداني","نرجس خضير هادي","احمد الطالقاني","احمد علي حسون","احمد مهدي العبيدي","الافنان","الايمان","الايمن","الحلة المركزية","الروعة","السراج المنير","السمو","الطوارئ","الفياض","الماسة","المدينة المنورة","النجاة","بلاط الشهداء","دار النجاة","دجلة العلمية","رفل مجيد الخالدي","ريام حسين المحنه","زينب محمد العبيدي","سارة عبدالحليم مجهول","ضحى صباح رمضان","فيض الكوثر","كلكامش","مدينتي","نجلاء الشباني","هدى رسول دوهان","الاء الاسدي","لمياء حمزة الجبوري","علاء عبد الحسين عودة","احمد ناظم","بنسلين","مصطفى صالح مهدي","الشفق","محمد خليل","هبة حسن خليبص","ايلاف حسين جهاد","الفاتنة","نوران صالح مهدي","الخيال","الشراع","الابهر","الوند","سارة ثامر","الحمزة النموذجية","بنين علي غالب","غدير زهير العمشاوي","شذى صالح مهدي","زيد كاظم حسن","حسين قاسم خلف","ساره علي ماشي","الحسام العلمية","الفيحاء","دوائك","سجاد كريم الجبري","غفران كريم الشيباوي","حسن فليح الخفاجي","هبة الله عبد الكريم","علي حسين الزبيدي","التراث","محمد رسول جبار","محمد سعدي عبد الامير","القلب","صادق جاسم وحيد","اكد","الافق","الجوري","السرور","انوار الغري","اوروك","شروق عبدالالة كاظم","عبدالكريم المعموري","حسام الفتلاوي","علي عبد الكريم صاحب","بسمة ماجد جابر","الوقاية","زهراء حمودي احمد","علياء سلمان خليل","البرهان","علا حسين طالب","حنان مالك العمري","الميادين","السدير","المحيط","بيت العلاج","جنات عدن","سر الحياة","نمارق","علي عبد السادة","حوراء رحيم","علي حسن العامري","كاظم كامل البديري","تقى هاتف","يشفين","السنية الدوائية","الصحة والعافية","تاج الدواء","رشا صباح عبدالرحمن","مهند الساعدي","رافد الصالح","علا عبدالاله عبيد","احمد كاظم عبد الساده","الرامي","السراي","صفا محمد منيثر","النحل","اماني ستار جابر","زينب حسين رشاد","القمة","احمد عبد الامير الكعبي","السفير","جنات النعيم","صفاء جلال عبدالصاحب","كرار جابر حسن","الشافعية","زهراء صالح","احسان حازم عبد","اريج حسام الخالدي","اسعد الجنابي","اضواء المدينة","الشام","الشامية","العربية","العنبر","المياسين","الهام العكيلي","الوردية","باسم محمد عواد","حسين علي حميد","حوراء قاسم سعيد","دارالشفاء","رسل حميد عداي","سارا رحمن الجنابي","علي ثائر حسن","منتظر اسكندر فليح","هالة معن غالب","وادي الرافدين","المجرة","علاء سالم القصير","باسم الجبوري","الياس","مستشفى الشامية","ايات محسن جعباز","حسين سعد الشمري","حسنين عبد الحسين","سرى كاظم هادي","مثنى محسن العابدي","الحرية","مهند صاحب الاسدي","مصطفى رياض جاسم","مصطفى حسين فخر الدين","افاطم قاسم باقر","الريادة","عبدالله ماجر ونلس","الرمال","الولاية","اليسار","تهاني ياس خضير","مصطفى محمد الفتلاوي","احمد الشيباني","عقيل حسون افندي","منى حميد","جابر سامي جابر","احمد بدر العيساوي","مصطفى جليل عبد السادة","زيد علي طاهر","الارجوان","هند مسلم","اريدو","الام والطفل","الان","بندول","البيت الطبي العلمية","الرند","الشاملة","الغيث","المسلة","الودق","الورود","الولادة","ام القرى","رنا سعد الركابي","المنزل","علاجك","وصفة الشفاء","لبنان","كناري","الهيبة","زحل","شفائكم","درة الخليج","النافورة","الضمان","ملاك ناصر حسين","وهج العروبه","السما","اللمار","هبة رزاق مهدي","احمد كريم الزيادي","سارة مؤيد العماري","الفراتين","النيزك","المطر","زيد شاكر الخفاجي","الفخر","غفران طالب","مسره محمد خليل","هاشم نصير الموسوي","امل كريم المعموري","الرحيق","زهراء سلمان جاسم","علي كريم الربيعي","هيثم الركابي","وفاء ناهي علوان","حكاية بغداد","الضاحية","حنين حاكم","فيروز الزيادي","مروة سالم شعلان","امل كريم حسوني","غفران عادل العابدي","رسل الرحمة","البستان","التطبيقية","الدولية","الضرغام","اللمسة الشافية","المتطورة","المميزة","الموسوعة الدوائية","الياقوت","دانية الخفاجي","كيوي","الجميرا","صيدلية ابيض","صفا عباس صيهود","الوتر","القطن","وفر","الشرقية","كرار حيدر هاتف","الاتحاد","الاجيال","منى عبد الرضا القرغولي","ايلاف احسان الصليخي","ليث محمد سعدون","الشموخ","الروح","المها","اليقين","سارة حسين الزبيدي","خالد وليد الكعبي","زين العابدين علي محمد","سيف","الغد","علي حيدر عبد زيد","المتحدة العلمية","ريام محمد حسن","الفصول الاربعة","الكندي","فراس الوائلي","نور ماجد الجنابي","هدى فايز الصالحي","البسمله","المشرق","التفاح الاخضر","حنين ساجد محمود","دعاء جواد كاظم البديري","الساقي","حيدر حسين عبدالزهرة","زهراء حمزة وناس","ربى معن الشيباني","النون","شجرة التوت","الزنبقة","القند","المينا","بابلون","ايسن","تعليم بغداد","دمشق","ازهر رزاق الكرعاوي","الزمرد","فاتن ابراهيم الرماحي","حي رمضان","نور المنتظر","زهراء غالب البديري","ايات امين","هدير ناظم شعلان","اللؤلؤة","مروة كاظم نعمان","العهود","دعاء عبد الكاظم","سجى جمال فاضل","الحكمة الدوائية","الفيروز","اليوم","سومر","مسلم خانس البركي","الساحة","البقاء","نور كاظم عبد زيد","نبأ محمد باقر","ريام كامل نجم","بتول كامل","النخوة","الترياق","فاطمه عزيز جار الله","علي صالح حسين","نور عبد الكاظم عبد زيد","الامير","البدوية","اوس الغانم","الهمام","ابن البيطار","ابن حيان","اسعد الزيدي","الاوس","البراق العلمية","الساعة","السلامة","الشفاء","الصافي","الصفوة","النرجس","النقاء","الوتين","الوطن","الياسر","ايناس ناصر حمد","حسين علي صاحب","دار الدواء","رسل مالك هادي","رغد جميل الحسني","زينة","سلامتك","عقيل الجنابي","كفاء العبودي","محاسن","مدار الساعة","ملاك الرحمة","ميسون العبادي","قرنفل","ابصار","ابن الهيثم","اسامة مالك الزبيدي","الاسعد","البقيع","الرئيسية","السبيل","السماح","السنبلة","بحر الدواء","بسام الزيادي","بيان صبر الزيادي","بيروت","دواكم","زمزم","سرى سالم شنيع","سندس","لميس عبدالجبار عبدالستار","مزايا","هديل عبد الحميد","هناء","وسام الجناحي","النوال","الشافي","الناقوس","النور","رؤى الحميداوي","رواء هادي عبود","زينب الطائي","زينب حامد الخزاعلي","الثغر","الجوهرة","اسراء جاسم الجبوري","الدلال","الركن الطبي","الضحى","اللين","المعراج","عباس جبار ظاهر","مهدي صالح عباس","اكرم البديري","التفاؤل","غزوان حسن دوحان","الازل","البراءة","علي محمد علي","بهاء محمود نوري","الاصيل","نبأ عزت الله","سيف الدين فراس","كرار حيدر","افراح كريم","عفك","الضفاف","بشرى رحمن حيذور","احمد عزيز حمود","النهج الدوائي","الدلة والفنجان","فاطمة عويز","اسماء باقر","الاء حسين الميالي","امير علي حميد","دار الحكمه","علي عمار حياوي","سرى عبدالهادي جاسم","غماس","هدى الخفاجي","اسيل محسن","علاء غسان مشكور","فرحان علوص كاظم","مطلك ادريس مطلك","كرار ريسان","جذع النخلة","زهراء عبد الكريم الحنابي","ساره نعمان الحسيني","مرتضى مازن ال شريف","علي مجبل حسين","براثا","ابشر","احمد حسين زغير","العسل","الناي","الهمم","كرار جاسم جبر","تل الورد","الحل الامثل","الرزان","ياسر محمد عزيز","اليرموك","ريام سمير جاسم","سارة كاظم الزبيدي","سلام العميشي","غفران علي الحيدري","لمى البديري","ماهر عبدالامير شناوة","محمد ضياء الكناني","محمد يحيى فالح","مخلد رحيم عبيس","الحرير","اطلس","الوسيم","وسام علاوي","الفضة","حيدر علي الموسوي","الثورة","فاطمة فاضل الغانمي","زينب علي السعيدي","رندة ناوي كليل","دواء الجنة","طيبة ثابت العصامي","الليان","رحاب حميد مهدي","الناحية","يحيى كريم جابر","لجين","ذوالفقار ناظم حميد"],"pr":[["Alvear Ginseng royal jelly","Desma"],["Alvear Junior royal jelly","Desma"],["Capsolin Revulsivo","Desma"],["Carbo yoghurt plus double strength - 30 tablets","Desma"],["Carboyoughurt Active - 30 tablets","Desma"],["CENTELLASE","Desma"],["Cerumenol Drop","Desma"],["Coryfin mucolitico 250 mg/5ml syrup","Desma"],["Coryfin Tosse Espettorante 3mg/ml syrup 200ml","Desma"],["Dedrogyl 15mg/100ml","Desma"],["Fomentil - 10 inhalation vapour tablets","Desma"],["Fulcin 500mg Tablet","Desma"],["Infloran Bio Kids - 7 oral vials. 10 ml","Desma"],["Infloran Bio Plus Tablets","Desma"],["Ironec folic","Desma"],["Kalinor","Desma"],["Leviogel 10 mg / g gel tube","Desma"],["Rino calyptol 15 mg ml nasal spray","Desma"],["Sterogyl 15 A","Desma"],["Sterogyl 15 H","Desma"],["Sterogyl Oral drops solution","Desma"],["ANAZOL SUSPENSION 200 MG /5 ML","JPI"],["ANAZOL TAB 500MG","JPI"],["ATORVA FCT 20 MG","JPI"],["FENAM SYRUP 120ML","JPI"],["GLUCARE TAB 500 MG","JPI"],["Glucare XR 750mg/30 Tab.ORG.Iraq","JPI"],["INFLACOX CAP 200 MG","JPI"],["LEVONIC TAB 500MG","JPI"],["Lorinex 0.5mg/ml Syrup 150ml Iraq","JPI"],["Megamox 156 Susp.ORG.100 ML","JPI"],["MEGAMOX 1G TAB/14 IRAQ","JPI"],["Megamox 312 mg Susp.100ml Iraq","JPI"],["Megamox 457 mg Susp.70 ml Iraq","JPI"],["Megamox 625 mg Tab. 20 Iraq","JPI"],["MEGAMOX ES 600MG SUSP. 100ML IRAQ","JPI"],["NEXUS CAP 20 MG","JPI"],["NEXUS CAP 40 MG","JPI"],["NOSTIFIX 0.5MG 8 TAB IRAQ","JPI"],["Oflam 50mg Pouch 10 Iraq","JPI"],["Paraxone Capsule/30 Iraq","JPI"],["PREGAB 150mg GEL BT/30","JPI"],["PREGAB 50mg BT/30","JPI"],["PREGAB 75 mg Gel BT/14","JPI"],["REMOX 500 MG CAP 500 MG","JPI"],["REMOX SUSPENSION 125 MG / 5 ML","JPI"],["REMOX SUSPENSION 250 MG / 5 ML","JPI"],["REPADERM GEL 0.01 40GM TUBE (1*1)","JPI"],["ROMIN SYRUP 120 ML","JPI"],["SUPERSTAT 20 MG B/30","JPI"],["UNAIRA 3G 1 SACHET IRAQ","JPI"],["XELON 15MG/5ML SYRUP (120ML) IRAQ","JPI"],["XELON TAB 5 MG","JPI"],["Xeractan 10mg CAP","JPI"],["Xeractan 20mg CAP","JPI"],["ZINIR 300MG CAP/10 IRAQ","JPI"],["ZINIR SUSPENSION 125 MG / 5 ML 40ML (1*1)","JPI"],["ZINIR SUSPENSION 125 MG / 5 ML 80ML (1*1)","JPI"],["Apobilen 2.5mg F.C Tab","Novalie Spain"],["Apobilen 5mg F.C Tab","Novalie Spain"],["Apple cider vinegar","Novalie Spain"],["Betanov 30 g","Novalie Spain"],["Ceflinov 750mg powder for IM/IV injection","Novalie Spain"],["Ceftazid 1G","Novalie Spain"],["Ceftriaxone Novalie 1G IM injection","Novalie Spain"],["Ceftriaxone Novalie 1G IV Injection","Novalie Spain"],["Danevon 8mg/4ml IM/IV solution","Novalie Spain"],["Diclinov 75mg/3ml IM solution","Novalie Spain"],["folic acid novalie 5mg Tablet","Novalie Spain"],["Fosfomicina Novalie 3g granules","Novalie Spain"],["Frunov 20mg/2ml IM/IV solution","Novalie Spain"],["Ginkgolie Plus","Novalie Spain"],["Hydrocortisone Novalie 10mg/g","Novalie Spain"],["Lactulose Novalie 667mg/ml syrup","Novalie Spain"],["lavocestine 200ml","Novalie Spain"],["Liglifev 2.5mg/1000mg F.C Tab","Novalie Spain"],["Liglifev 2.5mg/850mg F.C Tab","Novalie Spain"],["Macanov","Novalie Spain"],["Mecobalie 1mg FCT","Novalie Spain"],["Merovalie 1G Vial","Novalie Spain"],["Merovalie 500mg IV Vial","Novalie Spain"],["Nebivalie 5mg Tablet","Novalie Spain"],["Neurolie B-complex 6 IM ampoule","Novalie Spain"],["Nevons multivitamin gummy adult","Novalie Spain"],["Nova Carbo Plus 30 Caps","Novalie Spain"],["Nova Carbo Plus 60 Caps","Novalie Spain"],["Novarest Capsule","Novalie Spain"],["NovAspin 100mg G.R Tablet","Novalie Spain"],["Ondavalie 8mg/4ml IM/IV solution","Novalie Spain"],["Paramas 200mg/5ml syrup - 85ml","Novalie Spain"],["Paravas 200 Mg","Novalie Spain"],["Paravas 250mg suppositories","Novalie Spain"],["Popolie immunity vitamins + minerals","Novalie Spain"],["Popolie multivitamins + calcium","Novalie Spain"],["TIENALIE 500/500mg IV injection 20ml","Novalie Spain"],["Vinova","Novalie Spain"],["Vitamin B12","Novalie Spain"],["Zolenov 10mg g cream - 20g","Novalie Spain"],["Zolenov 10mg/ml Cutaneous solution 20ml","Novalie Spain"],["Atopic 0.1% ointment","Philadelphia"],["BEMO OINTMENT 15 GM","Philadelphia"],["Bemo Ointment 30 g","Philadelphia"],["Calamine Lotion 200 ml","Philadelphia"],["Clinaderm Topical solution","Philadelphia"],["Crotaphil - H cream","Philadelphia"],["Crotaphil Cream","Philadelphia"],["Dcol","Philadelphia"],["Gestophil 3x5 supp.","Philadelphia"],["Ibuphil Syrup","Philadelphia"],["Kenaphil Cream","Philadelphia"],["Mesone Cream","Philadelphia"],["Mesone Ointment","Philadelphia"],["Metroza 1% cream","Philadelphia"],["Metroza Gel","Philadelphia"],["Mycophil Oral suspension","Philadelphia"],["Orexon","Philadelphia"],["Panthophil Cream","Philadelphia"],["Panthophil gold Vitamin H.T","Philadelphia"],["Panthophil lotion","Philadelphia"],["Panthophil oil free moisturising Cream","Philadelphia"],["Panthophil Shampoo","Philadelphia"],["Panthophil Vitamin H.T","Philadelphia"],["Panthophil Wash 200ml","Philadelphia"],["Pelargos","Philadelphia"],["Philaquin 2% cream","Philadelphia"],["Philaquin Forte 4% cream","Philadelphia"],["Philax laxative Drops 15ml","Philadelphia"],["Resulen Vaginal Ovules 2x5","Philadelphia"],["Retrosin 4mg/g","Philadelphia"],["Scarmed plus","Philadelphia"],["Scarmed silicon gel 15g","Philadelphia"],["Sealar Cream 30g","Philadelphia"],["Uciderm - B Cream","Philadelphia"],["Uciderm Cream","Philadelphia"],["Uciderm Ointment","Philadelphia"],["Vitilase Cream 65 g","Philadelphia"],["Vocort cream 15 g (1)","Philadelphia"],["Xylophil 10% spray","Philadelphia"],["Xylophil Base","Philadelphia"],["Cifran","Sun Pharma"],["Cilanem 500 IV infusion","Sun Pharma"],["Diprovate","Sun Pharma"],["Enhancin 1g","Sun Pharma"],["Enhancin 156.25","Sun Pharma"],["Enhancin 312.5","Sun Pharma"],["Enhancin 375","Sun Pharma"],["Enhancin 625","Sun Pharma"],["Garlic Pearls 100 caps","Sun Pharma"],["Garlic Pearls 30caps","Sun Pharma"],["Garlic Plastic","Sun Pharma"],["Gynostatum 30g","Sun Pharma"],["Histac","Sun Pharma"],["Histac 150mg tab 2x10","Sun Pharma"],["Histac 150mg tab 3x10","Sun Pharma"],["Infectomycin 500mg Tab","Sun Pharma"],["Invoril - 10 mg","Sun Pharma"],["Irbesar H 150+12.5mg","Sun Pharma"],["Irbesar tablet 150mg","Sun Pharma"],["Irbesar tablet 300mg","Sun Pharma"],["Ketanov MD 10mg","Sun Pharma"],["Lovir 200mg","Sun Pharma"],["Pantocid 20 mg","Sun Pharma"],["Pantocid 40 mg","Sun Pharma"],["Pepfiz Lemon Flavour","Sun Pharma"],["Pepfiz Orange Flavour","Sun Pharma"],["Raciper 20mg","Sun Pharma"],["Raciper 40mg","Sun Pharma"],["Rancif 500mg Tab","Sun Pharma"],["Revital","Sun Pharma"],["Rodera 5mg","Sun Pharma"],["Roletra 10mg","Sun Pharma"],["Romilast 10mg","Sun Pharma"],["Romilast 5mg","Sun Pharma"],["Ropenem 1g IV injection","Sun Pharma"],["Roscillin 250mg","Sun Pharma"],["Rosuvas 10mg","Sun Pharma"],["Rosuvas 20mg","Sun Pharma"],["Rosuvas 40mg","Sun Pharma"],["Simvor 20mg","Sun Pharma"],["Sotret 20mg","Sun Pharma"],["Starval 160 mg","Sun Pharma"],["Starval 80mg","Sun Pharma"],["Volini 50g","Sun Pharma"],["Ruatine 40mg","United"],["Alfa-Porosis 70 mg Tab","United"],["Anginet 160mg","United"],["Anginet 80mg","United"],["Antagra 1000Mg F.C Tablets","United"],["Antagra 250Mg F.C Tablets","United"],["Antagra 500Mg F.C Tablets","United"],["Antagra 750Mg F.C Tablets","United"],["Antagra Oral Solution 100mg/ml 300 ml","United"],["Antagra XR 500mg E.R F.C Tablets","United"],["Atoxia 120mg","United"],["Atoxia 60mg F.C.T","United"],["Atoxia 90mg","United"],["Axepta 10Mg Capsules","United"],["Axepta 18mg Capsules","United"],["Axepta 25mg Capsules","United"],["Axepta 40mg Capsules","United"],["Azicure 200 Dry Suspension","United"],["Azicure 250mg cap","United"],["Azicure 500mg Tab","United"],["Boneto 30g ointment","United"],["Boneto baby 30 GM H","United"],["Candizol 2% oral gel","United"],["Cangin 50mg/vial powder for solution (IV infusion)","United"],["Clindacin 150 mg","United"],["Co-Anginet 160/12.5mg","United"],["Co-Anginet 160/25mg","United"],["Co-Anginet 80/12.5mg","United"],["Davlex 100mg tablet","United"],["Davlex 50mg tablet","United"],["Diabeten 5mg F.C Tab","United"],["Diabeten M 2.5/1000mg F.C Tab","United"],["Diabeten M 2.5/850mg F.C Tab","United"],["Diclofen 25mg","United"],["DICLOFEN 30 GM CREMOGEL","United"],["Elerax 25mg F.C Tablets","United"],["Elerax 50mg F.C Tablets","United"],["Epival 100 ml 200mg/5ml","United"],["Exofen 120mg","United"],["Exofen 180mg","United"],["Explat 75mg 30 F.C tabs","United"],["Ezaderm Cream","United"],["Fentex 250mg/5ml solution for IM/IV injection 10 vials","United"],["Floroxin 500 mg","United"],["Gardia 16mg","United"],["Gardia 8mg","United"],["Gardia Plus 16/12.5mg","United"],["Gardia Plus 8/12.5mg","United"],["Glimeryl 1mg tab","United"],["Glimeryl 2mg tab","United"],["Glimeryl 3mg tab","United"],["Glimeryl 4mg tab","United"],["Glimeryl M 2/500mg F/C tab","United"],["Gyno-Candizole 200 V.O","United"],["Gyno-Candizole 400 V.O","United"],["Hi Dee 10000 IU CAP","United"],["Hi Dee 2000 IU Oral drops","United"],["Hi Dee 5000 IU soft.g.c","United"],["Hi Dee 50000 IU","United"],["Inzide","United"],["Iris 100ml","United"],["Iris 5mg tablet","United"],["Kenzoprazol 40mg/Vial powder for solution (IV injection)","United"],["Klarihist 5mg/5ml Syrup","United"],["Klarihist tab 10mg","United"],["Lesonal 100ml oral solution","United"],["Lesonal 5mg","United"],["Lexar 10mg F.C Tab","United"],["Lexar 5mg F.C Tab","United"],["Longacef 1g I.V. Injection","United"],["Longacef 1g I.M. Injection","United"],["Losapil 100mg F.C","United"],["Losapil 50mg F.C","United"],["Lovira 250mg/Vial powder for solution (IV infusion)","United"],["Modrex 25mg Tablets","United"],["Neo Gaba 150mg 30 cap","United"],["Neo Gaba 150mg 50 caps","United"],["Neo Gaba 75 mg (14 Capsules)","United"],["Norax 400mg","United"],["Odran 4mg","United"],["Odran 8mg","United"],["Omisec 40mg/Vial powder for solution (IV infusion)","United"],["Osteo-Alfa 0.25 µg","United"],["Osteo-Alfa 1.0 µg","United"],["Oystercal-D","United"],["Pantoloc 40 mg E.C tab","United"],["Pantoloc 40 mg/vial Lyophilized powder for IV injection","United"],["Paquix 2.5mg F.C Tablets","United"],["Paquix 5mg F.C Tablets","United"],["Percepta 200mg Tablets","United"],["Percepta 50mg Tablets","United"],["Plagin 75mg F.C Tablets","United"],["Profilar Syrup","United"],["retalex 50mg/5ml solution for IV injection or infusion","United"],["Ribofan 12.5mg/50ml solution for IV infusion","United"],["Rimexa 50mg/5ml IV solution for injection","United"],["Rovaxar 10mg F.C Tab","United"],["Rovaxar 15mg F.C Tab","United"],["Ruatine 20mg","United"],["Ruxid 150mg","United"],["Ruxid 300mg","United"],["Scolta 10 f.c tablet","United"],["Scolta 20 f.c tablet","United"],["Scolta 40 f.c tablet","United"],["Senergy 10/160 F.C Tablet","United"],["Senergy 5/160 F.C Tablet","United"],["Senergy Plus 10/160/12.5 f.c tablet","United"],["Senergy Plus 5/160/12.5 f.c tablet","United"],["Senergy Plus 5/160/25 f.c tablet","United"],["Solix 30mg Capsule","United"],["Solix 60mg Capsule","United"],["Suraxim 400 mg","United"],["Tagbro 90mg F.C","United"],["Tango 20mg 1x4","United"],["TASKINE 400 MG 20 SOFTGELS","United"],["Taskine susp 100mg/5ml","United"],["Ticopex 200 mg /Vial powder for solution (IV,IM,IP injectio)","United"],["Toralac 10mg F.C Tablets","United"],["Toralac 20mg F.C Tablets","United"],["Tprizat 35mg MR Tablets","United"],["Uni- Cal 120 mg Capsule","United"],["Unicast 10","United"],["Unicast 4mg","United"],["Unicast 5mg","United"],["Unidox 100mg (1x10)","United"],["Uniflox 500 F.C Tablet","United"],["Unilexin 500mg","United"],["Unizole 150 Capsule","United"],["Vomiran 8mg/4ml solution for IV or IM injection","United"],["Xenamex 500mg/5ml solution for IV injection","United"],["Xitrol 10mg Tablets","United"],["Zorta 10mg tab","United"],["Zorta 15mg tab","United"],["Zorta Oral Solution 1mg/1ml 120 ml","United"]]};
+var PH=DB.ph.map(function(n){return{t:n}}),PR=DB.pr.map(function(a){return{t:a[0],c:a[1]}});
+function L(k){return load(k,[]).map(function(x){return{t:x}})}
 var cur=null, imgData='';
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -134,15 +171,25 @@ function toast(t){var e=$('toast');e.textContent=t;e.style.display='block';setTi
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 
 /* الاقتراحات */
-function suggest(inp,key,min){
+function nz(s){return String(s).toLowerCase().replace(/[\u064B-\u065F\u0670]/g,'').replace(/[\u0623\u0625\u0622\u0671]/g,'\u0627').replace(/\u0629/g,'\u0647').replace(/\u0649/g,'\u064A').replace(/\s+/g,' ').trim()}
+function bg(s){var a={};s=' '+s+' ';for(var i=0;i<s.length-1;i++)a[s.substr(i,2)]=1;return a}
+function dice(a,b){var x=bg(a),y=bg(b),n=0,c=0,d=0,k;for(k in x){c++;if(y[k])n++}for(k in y)d++;return 2*n/(c+d||1)}
+function rank(list,q){q=nz(q);var tk=q.split(' '),out=[];
+  list.forEach(function(it){var n=it.k||(it.k=nz(it.t)),sc;
+    if(n.indexOf(q)===0)sc=0;else if(n.indexOf(q)>0)sc=1;
+    else if(tk.every(function(t){return n.indexOf(t)>=0}))sc=2;
+    else{var d=dice(q,n.substr(0,q.length+2));if(d>=0.5)sc=3+(1-d);else return}
+    out.push([sc,it])});
+  out.sort(function(a,b){return a[0]-b[0]});return out.slice(0,8).map(function(x){return x[1]})}
+function suggest(inp,src,min){
   var box=document.createElement('div');box.className='sug';box.style.display='none';
   inp.parentNode.appendChild(box);
   inp.addEventListener('input',function(){
-    var q=inp.value.trim().toLowerCase();box.innerHTML='';
+    var q=inp.value.trim();box.innerHTML='';
     if(q.length<min){box.style.display='none';return}
-    var m=load(key,[]).filter(function(s){return s.toLowerCase().indexOf(q)===0&&s.toLowerCase()!==q}).slice(0,6);
+    var m=rank(src(),q);
     if(!m.length){box.style.display='none';return}
-    m.forEach(function(s){var d=document.createElement('div');d.textContent=s;
+    m.forEach(function(it){var s=it.c?it.t+' -'+it.c:it.t;var d=document.createElement('div');d.textContent=it.t;if(it.c){var sp=document.createElement('span');sp.className='mut';sp.textContent=' \u2014 '+it.c;d.appendChild(sp)}
       d.addEventListener('mousedown',function(e){e.preventDefault();inp.value=s;box.style.display='none'});
       d.addEventListener('touchstart',function(e){e.preventDefault();inp.value=s;box.style.display='none'},{passive:false});
       box.appendChild(d)});
@@ -156,10 +203,10 @@ function remember(key,val){val=val.trim();if(!val)return;var l=load(key,[]);
 /* الصفوف */
 function addDist(v){var r=document.createElement('div');r.className='row';
   r.innerHTML='<div class="rel"><input class="dn" placeholder="اسم المذخر" autocomplete="off"></div><button class="x" onclick="rm(this)">✕</button>';
-  $('dists').appendChild(r);var i=r.querySelector('input');i.value=v||'';suggest(i,'sug_dist',2)}
+  $('dists').appendChild(r);var i=r.querySelector('input');i.value=v||'';suggest(i,function(){return L('sug_dist')},2)}
 function addItem(n,q,bp){var r=document.createElement('div');r.className='row';
-  r.innerHTML='<div class="rel"><input class="in" placeholder="اسم المادة (أول حرفين)" autocomplete="off"></div><input class="qty iq" inputmode="numeric" placeholder="العدد"><input class="qty ib" inputmode="decimal" placeholder="بونص %"><button class="x" onclick="rm(this)">✕</button>';
-  $('items').appendChild(r);var i=r.querySelector('.in');i.value=n||'';r.querySelector('.iq').value=q||'';r.querySelector('.ib').value=bp||'';suggest(i,'sug_item',2)}
+  r.innerHTML='<div class="rel"><input class="in" placeholder="اسم المادة (أول 3 أحرف)" autocomplete="off"></div><input class="qty iq" inputmode="numeric" placeholder="العدد"><input class="qty ib" inputmode="decimal" placeholder="بونص %"><button class="x" onclick="rm(this)">✕</button>';
+  $('items').appendChild(r);var i=r.querySelector('.in');i.value=n||'';r.querySelector('.iq').value=q||'';r.querySelector('.ib').value=bp||'';suggest(i,function(){return PR.concat(L('sug_item'))},3)}
 function rm(b){var p=b.parentNode,c=p.parentNode;if(c.children.length>1)p.remove();else p.querySelectorAll('input').forEach(function(i){i.value=''})}
 
 /* الصورة */
@@ -167,14 +214,14 @@ function pickImg(f){var file=f.files[0];if(!file)return;var rd=new FileReader();
   rd.onload=function(){var im=new Image();im.onload=function(){
     var s=Math.min(1,1280/Math.max(im.width,im.height)),c=document.createElement('canvas');
     c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);
-    imgData=c.toDataURL('image/jpeg',0.8);showImg()};im.src=rd.result};rd.readAsDataURL(file)}
-function showImg(){var p=$('prev');if(imgData){p.src=imgData;p.style.display='block';$('rmImg').classList.remove('hide')}else{p.style.display='none';$('rmImg').classList.add('hide')}}
-function clearImg(){imgData='';$('img').value='';showImg()}
+    imgData=c.toDataURL('image/jpeg',0.8);OV=null;loadBase();showImg()};im.src=rd.result};rd.readAsDataURL(file)}
+function showImg(){var p=$('prev');if(imgData){p.src=imgData;p.style.display='block';$('rmImg').classList.remove('hide');$('ovBtn').classList.remove('hide');$('ovBtn').textContent=OV?'✏️ تعديل النص داخل الصورة (مفعّل ✓)':'✏️ كتابة النص داخل الصورة'}else{baseImg=null;p.style.display='none';$('rmImg').classList.add('hide');$('ovBtn').classList.add('hide')}}
+function clearImg(){imgData='';OV=null;$('img').value='';showImg()}
 function dataToFile(d){var a=d.split(','),b=atob(a[1]),n=b.length,u=new Uint8Array(n);while(n--)u[n]=b.charCodeAt(n);return new File([u],'order.jpg',{type:'image/jpeg'})}
 
 /* الطلبية */
 function collect(){
-  return{id:cur&&cur.id||Date.now(),date:new Date().toISOString(),pharm:$('pharm').value.trim(),
+  return{id:cur&&cur.id||Date.now(),date:new Date().toISOString(),pharm:$('pharm').value.trim(),coop:$('coop').value.trim(),ov:OV,
     dists:[].map.call(document.querySelectorAll('.dn'),function(i){return i.value.trim()}).filter(Boolean),
     items:[].map.call(document.querySelectorAll('#items .row'),function(r){return{n:r.querySelector('.in').value.trim(),q:r.querySelector('.iq').value.trim(),b:r.querySelector('.ib').value.trim()}}).filter(function(x){return x.n}),
     note:$('note').value.trim(),img:imgData}}
@@ -183,45 +230,79 @@ function learn(o){remember('sug_pharm',o.pharm);o.dists.forEach(function(d){reme
 var STY={bold:['عريض','*','font-weight:700'],italic:['مائل','_','font-style:italic'],strike:['يتوسطه خط','~','text-decoration:line-through'],mono:['خط ثابت','```','font-family:monospace'],none:['عادي','','']};
 var NUM={num:'1.',enum:'1️⃣',dot:'•',check:'✅',blue:'🔹',pill:'💊',star:'⭐'};
 function numStr(k,i){if(k=='num')return (i+1)+'. ';if(k=='enum')return String(i+1).split('').map(function(d){return d+'\uFE0F\u20E3'}).join('')+' ';return NUM[k]+' '}
-var EMO={pharm:['الصيدلية',['🏥','💊','🏪','⚕️']],dist:['المذخر',['🏢','🚚','🏭','📍']],items:['المواد',['📦','💊','📋','🛍️']],note:['الملاحظة',['📝','💬','⚠️','📌']],date:['التاريخ',['📅','🕒','🗓️','⏰']]};
-function getSt(){var s=load('st',{}),em={};for(var k in EMO)em[k]=(s.em&&s.em[k])||EMO[k][1][0];return{num:s.num||'num',style:s.style||(s.bold===false?'none':'bold'),emoji:s.emoji!==false,date:s.date!==false,em:em}}
+var EMO={pharm:['الصيدلية',['🏥','💊','🏪','⚕️']],dist:['المذخر',['🏢','🚚','🏭','📍']],items:['المواد',['📦','💊','📋','🛍️']],note:['الملاحظة',['📝','💬','⚠️','📌']],coop:['بالتعاون مع',['🤝','👥','🔗','✍️']],date:['التاريخ',['📅','🕒','🗓️','⏰']]};
+function getSt(){var s=load('st',{}),em={};for(var k in EMO)em[k]=(s.em&&s.em[k]!=null)?s.em[k]:EMO[k][1][0];var d=s.style||(s.bold===false?'none':'bold'),sty={};['pharm','dist','items','note'].forEach(function(k){sty[k]=(s.sty&&s.sty[k])||d});return{num:s.num||'num',sty:sty,emoji:s.emoji!==false,date:s.date!==false,em:em}}
 function setOpt(k,v){var s=getSt();s[k]=v;save('st',s);renderSet()}
+function setSty(k,v){var s=getSt();s.sty[k]=v;save('st',s);renderSet()}
 function setEm(k,v){var s=getSt();s.em[k]=v;save('st',s);renderSet()}
 function chip(t,on,fn,sty){var b=document.createElement('button');b.className='chip'+(on?' on':'');b.textContent=t;if(sty)b.style.cssText=sty;b.onclick=fn;return b}
-function renderSet(){var s=getSt();$('sEmoji').checked=s.emoji;$('sDate').checked=s.date;
-  var so=$('styleOpts');so.innerHTML='';Object.keys(STY).forEach(function(k){so.appendChild(chip(STY[k][0],s.style==k,function(){setOpt('style',k)},STY[k][2]))});
-  var no=$('numOpts');no.innerHTML='';Object.keys(NUM).forEach(function(k){no.appendChild(chip(k=='enum'?'1️⃣ 2️⃣ 3️⃣':k=='num'?'1. 2. 3.':NUM[k]+' '+NUM[k]+' '+NUM[k],s.num==k,function(){setOpt('num',k)}))});
+var PGS=['home','form','sMenu','sFont','sNum','sEmoji','sComp'];
+function go(p){PGS.forEach(function(x){$(x).classList.toggle('hide',x!=p)});window.scrollTo(0,0);if(p=='home')renderList()}
+function sample(){return{pharm:'\u0635\u064a\u062f\u0644\u064a\u0629 \u0627\u0644\u0623\u0645\u0644',coop:'\u0641\u0644\u0627\u0646',dists:['\u0645\u0630\u062e\u0631 \u0627\u0644\u0646\u0648\u0631'],items:[{n:'Alvear Junior -Desma',q:'20',b:'30'},{n:'Capsolin Revulsivo -Desma',q:'10'}],note:'\u062a\u0648\u0635\u064a\u0644 \u0635\u0628\u0627\u062d\u0627\u064b',date:new Date().toISOString()}}
+function renderSet(){var s=getSt();$('cbEmoji').checked=s.emoji;$('cbDate').checked=s.date;
+  var fo=$('fontOpts');fo.innerHTML='';
+  [['pharm','\u0627\u0633\u0645 \u0627\u0644\u0635\u064a\u062f\u0644\u064a\u0629'],['dist','\u0627\u0633\u0645 \u0627\u0644\u0645\u0630\u062e\u0631'],['items','\u0623\u0633\u0645\u0627\u0621 \u0627\u0644\u0645\u0648\u0627\u062f \u0648\u0623\u0639\u062f\u0627\u062f\u0647\u0627'],['note','\u0627\u0644\u0645\u0644\u0627\u062d\u0638\u0629 (\u0648\u0628\u0627\u0644\u062a\u0639\u0627\u0648\u0646)']].forEach(function(p){
+    var r=document.createElement('div');r.className='fr';var l=document.createElement('div');l.className='mut';l.style.marginBottom='6px';l.textContent=p[1];r.appendChild(l);
+    var c=document.createElement('div');c.className='chips';Object.keys(STY).forEach(function(k){c.appendChild(chip(STY[k][0],s.sty[p[0]]==k,function(){setSty(p[0],k)},STY[k][2]))});r.appendChild(c);fo.appendChild(r)});
+  var no=$('numOpts');no.innerHTML='';Object.keys(NUM).forEach(function(k){no.appendChild(chip(k=='enum'?'1\ufe0f\u20e3 2\ufe0f\u20e3 3\ufe0f\u20e3':k=='num'?'1. 2. 3.':NUM[k]+' '+NUM[k]+' '+NUM[k],s.num==k,function(){setOpt('num',k)}))});
   var eo=$('emOpts');eo.innerHTML='';eo.style.display=s.emoji?'block':'none';
-  Object.keys(EMO).forEach(function(k){var r=document.createElement('div');r.className='emr';var sp=document.createElement('span');sp.textContent=EMO[k][0];r.appendChild(sp);var d=document.createElement('div');EMO[k][1].forEach(function(x){d.appendChild(chip(x,s.em[k]==x,function(){setEm(k,x)}))});r.appendChild(d);eo.appendChild(r)});
-  $('pv').innerHTML=text({pharm:'صيدلية الأمل',dists:['مذخر النور'],items:[{n:'باراسيتامول 500',q:'10',b:'30'},{n:'أموكسيسيلين',q:'5'}],note:'توصيل صباحاً',date:new Date().toISOString()},true)}
-function toggleSet(){$('set').classList.toggle('hide')}
+  Object.keys(EMO).forEach(function(k){var r=document.createElement('div');r.className='emr';var sp=document.createElement('span');sp.textContent=EMO[k][0];r.appendChild(sp);var d=document.createElement('div');EMO[k][1].concat(['']).forEach(function(x){d.appendChild(chip(x||'بدون',s.em[k]==x,function(){setEm(k,x)}))});r.appendChild(d);eo.appendChild(r)});
+  var h=text(sample(),true);$('pvF').innerHTML=h;$('pvN').innerHTML=h;$('pvE').innerHTML=h}
 function qs(x){var q=parseFloat(x.q),p=parseFloat(x.b);if(q>0&&p>0){var e=Math.floor(q*p/100);if(e>0)return '\u202A'+x.q+' +'+e+'\u202C'}return x.q}
-function text(o,h,pl){var S=getSt();if(pl)S.style='none';
-  function b(s){var m=STY[S.style][1];if(!m)return s;if(h){var g={bold:'b',italic:'i',strike:'s',mono:'code'}[S.style];return '<'+g+'>'+s+'</'+g+'>'}return m+s+m}
-  function e(k){return S.emoji?S.em[k]+' ':''}
-  var t=e('pharm')+b('الصيدلية:')+' '+o.pharm+'\n';
-  if(o.dists.length)t+=e('dist')+b('المذخر:')+' '+o.dists.join('، ')+'\n';
-  t+='\n'+e('items')+b('المواد:')+'\n';o.items.forEach(function(x,i){t+=numStr(S.num,i)+x.n+(x.q?' — العدد: '+qs(x):'')+'\n'});
-  if(o.note)t+='\n'+e('note')+b('ملاحظة:')+' '+o.note+'\n';
+function text(o,h,pl){var S=getSt();if(pl)for(var k in S.sty)S.sty[k]='none';
+  function b(s,p){var z=S.sty[p||'pharm'],m=STY[z][1];if(!m)return s;if(h){var g={bold:'b',italic:'i',strike:'s',mono:'code'}[z];return '<'+g+'>'+s+'</'+g+'>'}return m+s+m}
+  function e(k){return S.emoji&&S.em[k]?S.em[k]+' ':''}
+  var t=e('pharm')+b('الصيدلية: '+o.pharm,'pharm')+'\n';
+  if(o.dists.length)t+=e('dist')+b('المذخر: '+o.dists.join('، '),'dist')+'\n';
+  t+='\n'+e('items')+b('المواد:','items')+'\n';o.items.forEach(function(x,i){t+=numStr(S.num,i)+b(x.n+(x.q?' - عدد: '+qs(x):''),'items')+'\n'});
+  if(o.coop)t+='\n'+e('coop')+b('بالتعاون مع: '+o.coop,'note')+'\n';
+  if(o.note)t+='\n'+e('note')+b('ملاحظة: '+o.note,'note')+'\n';
   if(S.date)t+='\n'+e('date')+new Date(o.date).toLocaleString('ar-IQ');
   return t}
 function persist(o){var l=load('orders',[]);l=l.filter(function(x){return x.id!==o.id});l.unshift(o);
-  try{localStorage.setItem('orders',JSON.stringify(l))}catch(e){toast('المساحة ممتلئة، احذف طلبيات قديمة')}cur=o}
+  try{localStorage.setItem('orders',JSON.stringify(l))}catch(e){l.forEach(function(x,i){if(i>0)x.img=''});try{localStorage.setItem('orders',JSON.stringify(l))}catch(e2){toast('المساحة ممتلئة، احذف طلبيات قديمة')}}cur=o}
 function saveOrder(){var o=collect();if(!valid(o))return;learn(o);persist(o);toast('تم حفظ الطلبية ✅');goHome()}
 
 function share(o,app){
-  if(!valid(o))return;learn(o);persist(o);var t=text(o);
-  var plain=text(o,false,true);
+  if(!valid(o))return;learn(o);persist(o);toast('تم حفظ الطلبية تلقائياً ✅');var t=text(o);
+  var plain=text(o,false,true);var imgOut=composed(o),cap=!(o.ov&&o.ov.cap===false);
   if(o.img&&navigator.canShare){
-    var f=dataToFile(o.img);
+    var f=dataToFile(imgOut);
     if(navigator.canShare({files:[f]})){
-      navigator.share(app=='wa'?{files:[f],text:t}:{files:[f]}).then(function(){if(app=='wa')toast('اختر واتساب من القائمة');else showStep2(plain)}).catch(function(){});
+      navigator.share(app=='wa'&&cap?{files:[f],text:t}:{files:[f]}).then(function(){if(app=='wa'||!cap)toast('اختر '+(app=='wa'?'واتساب':'تلجرام')+' من القائمة');else showStep2(plain)}).catch(function(){});
       return}}
-  if(o.img){var a=document.createElement('a');a.href=o.img;a.download='order.jpg';document.body.appendChild(a);a.click();a.remove();toast('تم تنزيل الصورة، أرفقها يدوياً في المحادثة')}
+  if(o.img){var a=document.createElement('a');a.href=imgOut;a.download='order.jpg';document.body.appendChild(a);a.click();a.remove();toast('تم تنزيل الصورة، أرفقها يدوياً في المحادثة')}
   var u;
   if(app=='wa'){u='https://wa.me/?text='+encodeURIComponent(t)}
   else u='https://t.me/share/url?url='+encodeURIComponent(' ')+'&text='+encodeURIComponent(plain);
   window.open(u,'_blank')}
+var baseImg=null,OV=null,ED=null;
+function loadBase(){baseImg=null;if(!imgData)return;var im=new Image();im.onload=function(){baseImg=im};im.src=imgData}
+function rrect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function drawOv(c,W,H,ov){if(!ov||!ov.text||!ov.text.trim())return;
+  var fs=Math.round(W*ov.size/100);c.font='bold '+fs+'px "Segoe UI",Tahoma,Arial,sans-serif';c.direction='rtl';c.textAlign='right';c.textBaseline='top';
+  var maxW=W*0.92-fs*1.2,lines=[];
+  ov.text.split('\n').forEach(function(p){if(!p.trim()){lines.push('');return}var cur='';p.split(' ').forEach(function(x){var t=cur?cur+' '+x:x;if(cur&&c.measureText(t).width>maxW){lines.push(cur);cur=x}else cur=t});lines.push(cur)});
+  var lh=fs*1.35,bw=0;lines.forEach(function(l){bw=Math.max(bw,c.measureText(l).width)});
+  var pad=fs*0.6,BW=bw+pad*2,BH=lines.length*lh+pad*2;
+  var bx=Math.max(0,Math.min(W-BW,ov.x*W-BW/2)),by=Math.max(0,Math.min(H-BH,ov.y*H-BH/2));
+  c.fillStyle='rgba(255,255,255,0.85)';rrect(c,bx,by,BW,BH,fs*0.5);c.fill();
+  c.fillStyle='#111';lines.forEach(function(l,i){c.fillText(l,bx+BW-pad,by+pad+i*lh)})}
+function composed(o){if(!o.img)return '';if(!o.ov||!baseImg)return o.img;
+  var c=document.createElement('canvas');c.width=baseImg.naturalWidth;c.height=baseImg.naturalHeight;var x=c.getContext('2d');x.drawImage(baseImg,0,0);
+  var ov=JSON.parse(JSON.stringify(o.ov));if(ov.text===ov.gen)ov.text=text(o,false,true);
+  drawOv(x,c.width,c.height,ov);return c.toDataURL('image/jpeg',0.88)}
+function openEd(){if(!baseImg){toast('انتظر لحظة ثم أعد المحاولة');return}
+  var g=text(collect(),false,true);ED=OV?JSON.parse(JSON.stringify(OV)):{text:g,gen:g,size:3.2,x:.5,y:.5,cap:true};
+  if(ED.text===ED.gen){ED.text=g;ED.gen=g}
+  $('edText').value=ED.text;$('edSize').value=ED.size;$('edCap').checked=ED.cap!==false;
+  $('ed').classList.remove('hide');drawEd()}
+function drawEd(){var c=$('cv');c.width=baseImg.naturalWidth;c.height=baseImg.naturalHeight;var x=c.getContext('2d');x.drawImage(baseImg,0,0);drawOv(x,c.width,c.height,ED)}
+function edChg(){ED.text=$('edText').value;ED.size=parseFloat($('edSize').value);drawEd()}
+function edRegen(){var g=text(collect(),false,true);ED.text=g;ED.gen=g;$('edText').value=g;drawEd()}
+function closeEd(){$('ed').classList.add('hide')}
+function applyEd(){ED.cap=$('edCap').checked;OV=ED;closeEd();showImg();toast('تم تفعيل النص داخل الصورة')}
+function removeOv(){OV=null;closeEd();showImg()}
 function showStep2(txt){$('st2').style.display='flex';$('st2b').onclick=function(){$('st2').style.display='none';if(navigator.share)navigator.share({text:txt}).catch(function(){});else window.open('https://t.me/share/url?url='+encodeURIComponent(' ')+'&text='+encodeURIComponent(txt),'_blank')}}
 function getComps(){return load('comps',[])}
 function addComp(){var v=$('compIn').value.trim();if(!v)return;var l=getComps();if(l.indexOf(v)<0){l.push(v);save('comps',l)}$('compIn').value='';renderComps()}
@@ -231,26 +312,30 @@ function renderComps(){var l=getComps(),cl=$('compList'),ab=$('addBtns');cl.inne
   function big(t,fn){var b=chip(t,false,fn);b.className='sec';b.style.padding='10px 16px';ab.appendChild(b)}
   if(!l.length)big('+ إضافة مادة',function(){addItem()});
   else l.forEach(function(c){big(c,function(){compItem(c)})})}
-function compItem(c){var rows=document.querySelectorAll('#items .row'),inp=rows[rows.length-1].querySelector('.in'),v=inp.value.trim();if(!v){toast('اكتب اسم المادة أولاً');return}inp.value=v+' -'+c;addItem();var n=document.querySelectorAll('#items .in');n[n.length-1].focus()}
+function compItem(c){var rows=document.querySelectorAll('#items .row'),inp=rows[rows.length-1].querySelector('.in'),v=inp.value.trim();if(!v){toast('اكتب اسم المادة أولاً');return}if(v.toLowerCase().slice(-(c.length+2))!=(' -'+c).toLowerCase())inp.value=v+' -'+c;addItem();var n=document.querySelectorAll('#items .in');n[n.length-1].focus()}
 function sendWA(){share(collect(),'wa')}
 function sendTG(){share(collect(),'tg')}
 
 /* الواجهة */
-function reset(){$('pharm').value='';$('note').value='';$('dists').innerHTML='';$('items').innerHTML='';clearImg()}
+function reset(){$('pharm').value='';$('coop').value='';$('note').value='';$('dists').innerHTML='';$('items').innerHTML='';clearImg()}
 function newOrder(){cur=null;reset();addDist();addItem();$('home').classList.add('hide');$('form').classList.remove('hide');window.scrollTo(0,0)}
 function openOrder(id){var o=load('orders',[]).filter(function(x){return x.id===id})[0];if(!o)return;
-  cur=o;reset();$('pharm').value=o.pharm;$('note').value=o.note||'';
-  (o.dists.length?o.dists:['']).forEach(addDist);o.items.forEach(function(i){addItem(i.n,i.q,i.b)});imgData=o.img||'';showImg();
+  cur=o;reset();$('pharm').value=o.pharm;$('coop').value=o.coop||'';$('note').value=o.note||'';
+  (o.dists.length?o.dists:['']).forEach(addDist);o.items.forEach(function(i){addItem(i.n,i.q,i.b)});imgData=o.img||'';OV=o.ov||null;loadBase();showImg();
   $('home').classList.add('hide');$('form').classList.remove('hide');window.scrollTo(0,0)}
 function delOrder(id){if(!confirm('حذف هذه الطلبية؟'))return;save('orders',load('orders',[]).filter(function(x){return x.id!==id}));renderList()}
 function goHome(){$('form').classList.add('hide');$('home').classList.remove('hide');renderList()}
 function renderList(){var l=load('orders',[]);$('cnt').textContent=l.length?l.length+' طلبية':'';
   $('list').innerHTML=l.length?l.map(function(o){return'<div class="card ord" style="margin-bottom:8px"><div><b>'+esc(o.pharm)+'</b><div class="mut">'+o.items.length+' مادة · '+new Date(o.date).toLocaleDateString('ar-IQ')+'</div></div><div class="btns"><button class="sec" onclick="openOrder('+o.id+')">فتح</button><button class="dng" onclick="delOrder('+o.id+')">حذف</button></div></div>'}).join(''):'<div class="mut">لا توجد طلبيات محفوظة بعد.</div>'}
 
-suggest($('pharm'),'sug_pharm',3);
+suggest($('pharm'),function(){return PH.concat(L('sug_pharm'))},3);
 renderSet();
 renderComps();
 renderList();
+(function(){var c=$('cv'),d=null;
+  c.addEventListener('pointerdown',function(e){d={x:e.clientX,y:e.clientY,ox:ED.x,oy:ED.y};c.setPointerCapture(e.pointerId)});
+  c.addEventListener('pointermove',function(e){if(!d)return;var r=c.getBoundingClientRect();ED.x=Math.max(0,Math.min(1,d.ox+(e.clientX-d.x)/r.width));ED.y=Math.max(0,Math.min(1,d.oy+(e.clientY-d.y)/r.height));drawEd()});
+  c.addEventListener('pointerup',function(){d=null});c.addEventListener('pointercancel',function(){d=null})})();
 </script>
 </body>
 </html>
