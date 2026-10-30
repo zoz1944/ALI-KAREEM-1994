@@ -121,6 +121,8 @@ input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(15,118,110,.18)}
 .ib{transition:transform .15s,background-color .2s,box-shadow .2s}
 .ib.ok{box-shadow:0 0 0 0 rgba(43,182,115,.5)}
 #bView .ib.ok{animation:glow 2.4s ease-in-out infinite}
+@keyframes blink{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.6);filter:brightness(1)}50%{box-shadow:0 0 0 7px rgba(255,255,255,0);filter:brightness(1.8)}}
+.tb button,#edTop .ib:not(.ok){animation:blink 1.6s ease-in-out infinite}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .card{position:relative}
 .card:focus-within{z-index:5}
