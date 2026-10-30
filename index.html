@@ -7,6 +7,8 @@
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f3f6f5;--card:#fff;--tx:#14211d;--mut:#667570;--bd:#d9e2df;--pri:#0f766e;--pt:#fff;--dng:#c0392b}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1715;--card:#18231f;--tx:#e8f0ed;--mut:#93a39d;--bd:#2a3a35;--pri:#2bb3a5;--pt:#06201c;--dng:#ff7b6b}}
+@media(prefers-color-scheme:light){:root[data-theme="dark"]{--bg:#0f1715;--card:#18231f;--tx:#e8f0ed;--mut:#93a39d;--bd:#2a3a35;--pri:#2bb3a5;--pt:#06201c;--dng:#ff7b6b}}
+:root[data-theme="dark"]{--bg:#0f1715;--card:#18231f;--tx:#e8f0ed;--mut:#93a39d;--bd:#2a3a35;--pri:#2bb3a5;--pt:#06201c;--dng:#ff7b6b}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:"Segoe UI",Tahoma,"Noto Sans Arabic",Arial,sans-serif;font-size:16px}
@@ -62,14 +64,14 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px 14px
 .ib.big{width:60px;height:60px;font-size:28px}
 .ib.sm{flex-direction:column;width:44px;height:52px;border-radius:14px;font-size:15px;gap:3px}
 .ib.sm.on{outline:2px solid #fff}
-#stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+#stage{flex:1;min-height:34vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 #cv{display:block;touch-action:none;background:#000}
-#side{position:absolute;left:10px;top:50%;transform:translateY(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:10px}
-#barV{width:28px;height:36vh;border-radius:14px;border:3px solid #fff;touch-action:none;display:block}
+#side{position:absolute;left:10px;top:8px;bottom:8px;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+#barV{width:28px;flex:1 1 0;height:0;min-height:40px;max-height:300px;border-radius:14px;border:3px solid #fff;touch-action:none;display:block}
 .sw.big{width:30px;height:30px;border:3px solid #fff;margin:0}
-#bot{padding:10px 14px 16px}
+#bot{padding:10px 14px 16px;max-height:46vh;overflow:auto}
 #bView,#bCrop{display:flex;justify-content:space-between;align-items:center}
-#pnT{max-height:40vh;overflow:auto}
+#pnT{overflow:visible}
 .sw{display:inline-block;width:14px;height:14px;border-radius:50%;border:1px solid #888;vertical-align:middle;margin-inline-start:6px}
 .thumb{position:relative;margin-bottom:10px}
 .thumb img{width:100%;max-height:260px;object-fit:contain;border-radius:10px;background:#000;display:block}
@@ -122,6 +124,25 @@ input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(15,118,110,.18)}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .card{position:relative}
 .card:focus-within{z-index:5}
+#dlg{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px}
+#dlg.hide{display:none}
+.dbox{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:16px;padding:18px;max-width:340px;width:100%;animation:edIn .2s}
+#dmsg{margin-bottom:14px;font-weight:600;overflow-wrap:anywhere}
+[data-i]{display:inline-flex;align-items:center;vertical-align:middle}
+svg.i{width:1.2em;height:1.2em;flex:none}
+button svg.i{margin-inline-end:6px}
+.x svg.i,.ib svg.i,.tb svg.i,#thBtn svg.i,.menu svg.i,.chev svg.i{margin:0}
+.x svg.i{width:18px;height:18px}.tb svg.i{width:20px;height:20px}.ib svg.i{width:22px;height:22px}
+h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26px}
+.menu{display:flex;align-items:center;gap:12px}.menu svg.i{width:22px;height:22px;color:var(--pri)}.menu .chev{margin-inline-start:auto;opacity:.45}
+.emi{width:50px;padding:6px;text-align:center;font-size:18px;flex:none}
+.emr>div{flex-wrap:wrap;justify-content:flex-end}
+#items .row{flex-wrap:wrap}
+.bxl{flex:0 0 100%;display:none;font-size:13px;color:var(--pri);font-weight:600;margin:-2px 0 2px}
+.pw{position:relative;width:72px;flex:none}
+.pw .qty{width:100%}
+.pg{position:absolute;left:13px;top:0;bottom:0;display:none;align-items:center;pointer-events:none;white-space:pre;direction:ltr;color:var(--mut)}
+.pg span{visibility:hidden}
 .sig{text-align:center;color:var(--mut);font-size:14px;margin:18px 0 8px}
 .sig a{color:var(--pri);text-decoration:none;font-weight:700}
 </style>
@@ -130,8 +151,8 @@ input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(15,118,110,.18)}
 <div class="wrap">
 
 <div id="home">
-  <div class="top"><h1>📦 طلبيات المندوب</h1><button class="sec" onclick="go('sMenu')">⚙️ الإعدادات</button></div>
-  <button class="pri big" onclick="newOrder()">➕ إنشاء أوردر جديد</button>
+  <div class="top"><h1><i data-i="pkg"></i> طلبيات المندوب</h1><div style="display:flex;gap:8px"><button class="sec" id="thBtn" onclick="toggleTheme()"></button><button class="sec" onclick="go('sMenu')"><i data-i="sliders"></i> الإعدادات</button></div></div>
+  <button class="pri big" onclick="newOrder()"><i data-i="plus"></i> إنشاء أوردر جديد</button>
   <div class="card">
     <div class="top"><b>الطلبيات المحفوظة</b><span class="mut" id="cnt"></span></div>
     <div id="list" style="margin-top:10px"></div>
@@ -173,16 +194,17 @@ input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(15,118,110,.18)}
 
   <div class="acts">
     <button class="wa" onclick="sendWA()">إرسال واتساب</button>
-    <button class="tg" onclick="sendTG()">إرسال تلجرام</button>
-    <button class="pri full" onclick="saveOrder()">💾 حفظ الطلبية</button>
+    <button class="pri" onclick="saveOrder()"><i data-i="save"></i> حفظ الطلبية</button>
   </div>
 </div>
 <div id="sMenu" class="hide">
-  <div class="top"><h1>⚙️ الإعدادات</h1><button class="sec" onclick="go('home')">رجوع</button></div>
-  <button class="menu" onclick="go('sFont')">🔤 تنسيق الخط</button>
-  <button class="menu" onclick="go('sNum')">🔢 ترقيم المواد</button>
-  <button class="menu" onclick="go('sEmoji')">😀 الإيموجي والتاريخ</button>
-  <button class="menu" onclick="go('sComp')">🏭 الشركات</button>
+  <div class="top"><h1><i data-i="sliders"></i> الإعدادات</h1><button class="sec" onclick="go('home')">رجوع</button></div>
+  <button class="menu" onclick="go('sFont')"><i data-i="type"></i> تنسيق الخط<i data-i="chev" class="chev"></i></button>
+  <button class="menu" onclick="go('sNum')"><i data-i="list"></i> ترقيم المواد<i data-i="chev" class="chev"></i></button>
+  <button class="menu" onclick="go('sEmoji')"><i data-i="smile"></i> الإيموجي والتاريخ<i data-i="chev" class="chev"></i></button>
+  <button class="menu" onclick="go('sComp')"><i data-i="brief"></i> الشركات<i data-i="chev" class="chev"></i></button>
+  <button class="menu" onclick="go('sPh')"><i data-i="cross"></i> الصيدليات المقترحة<i data-i="chev" class="chev"></i></button>
+  <button class="menu" onclick="go('sPr')"><i data-i="pill"></i> المواد المقترحة<i data-i="chev" class="chev"></i></button>
 </div>
 <div id="sFont" class="hide">
   <div class="top"><h1>تنسيق الخط</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
@@ -191,7 +213,8 @@ input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(15,118,110,.18)}
 </div>
 <div id="sNum" class="hide">
   <div class="top"><h1>ترقيم المواد</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
-  <div class="card"><div id="numOpts" class="chips"></div></div>
+  <div class="card"><div id="numOpts" class="chips"></div>
+    <div class="mut" style="margin-top:8px">لإضافة رمز خاص: اضغط على خانة ＋ واكتبه من لوحة المفاتيح.</div></div>
   <div class="mut" style="margin-bottom:6px">النموذج</div><div class="pv" id="pvN"></div>
 </div>
 <div id="sEmoji" class="hide">
@@ -200,8 +223,36 @@ input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(15,118,110,.18)}
     <label class="opt"><input type="checkbox" id="cbEmoji" onchange="setOpt('emoji',this.checked)">إظهار الإيموجي</label>
     <label class="opt"><input type="checkbox" id="cbDate" onchange="setOpt('date',this.checked)">إظهار التاريخ</label>
     <div id="emOpts"></div>
+    <div class="mut" style="margin-top:6px">لإضافة إيموجي خاص: اضغط على خانة ＋ واكتبه من لوحة المفاتيح.</div>
   </div>
   <div class="mut" style="margin-bottom:6px">النموذج</div><div class="pv" id="pvE"></div>
+</div>
+<div id="sPh" class="hide">
+  <div class="top"><h1>الصيدليات المقترحة</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
+  <div class="card">
+    <div class="row"><input id="phNew" placeholder="اسم صيدلية جديدة"><button class="pri" onclick="mgAdd('ph')">إضافة</button></div>
+    <div class="chips" style="margin:6px 0"><button class="sec" onclick="$('phFile').click()"><i data-i="dl"></i> استيراد من Excel</button><button class="sec" onclick="dlTemplate('ph')"><i data-i="file"></i> تنزيل نموذج</button></div>
+    <input type="file" id="phFile" accept=".xlsx,.csv" style="display:none" onchange="mgImport('ph',this)">
+    <div class="mut" style="margin-bottom:8px">العمود A: اسم الصيدلية. تُضاف الأسماء الجديدة فقط ولا يُحذف الموجود.</div>
+    <input id="phQ" placeholder="ابحث في القائمة" oninput="mgQ('ph')">
+    <div id="phBar" class="chips" style="margin:10px 0"></div>
+    <div class="mut" id="phCnt" style="margin:8px 0"></div>
+    <div id="phList"></div>
+  </div>
+</div>
+<div id="sPr" class="hide">
+  <div class="top"><h1>المواد المقترحة</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
+  <div class="card">
+    <div class="row"><input id="prNew" placeholder="اسم المادة"><input id="prCo" placeholder="الشركة" style="width:110px;flex:none"></div>
+    <button class="pri" style="width:100%;margin-bottom:10px" onclick="mgAdd('pr')">إضافة مادة</button>
+    <div class="chips" style="margin:6px 0"><button class="sec" onclick="$('prFile').click()"><i data-i="dl"></i> استيراد من Excel</button><button class="sec" onclick="dlTemplate('pr')"><i data-i="file"></i> تنزيل نموذج</button></div>
+    <input type="file" id="prFile" accept=".xlsx,.csv" style="display:none" onchange="mgImport('pr',this)">
+    <div class="mut" style="margin-bottom:8px">العمود A: اسم المادة، العمود B: الشركة. تُضاف الأسماء الجديدة فقط ولا يُحذف الموجود.</div>
+    <input id="prQ" placeholder="ابحث في القائمة" oninput="mgQ('pr')">
+    <div id="prBar" class="chips" style="margin:10px 0"></div>
+    <div class="mut" id="prCnt" style="margin:8px 0"></div>
+    <div id="prList"></div>
+  </div>
 </div>
 <div id="sComp" class="hide">
   <div class="top"><h1>الشركات</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
@@ -212,8 +263,9 @@ input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(15,118,110,.18)}
 </div>
 </div>
 <div class="sig">علي كريم : <a href="tel:07831698069" dir="ltr">07831698069</a></div>
+<div id="dlg" class="hide"><div class="dbox"><div id="dmsg"></div><div class="acts"><button class="dng" id="dok">حذف نهائي</button><button class="sec" onclick="dclose()">إلغاء</button></div></div></div>
 <div id="pvBox" class="hide">
-  <button class="ib" style="position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px" onclick="pvClose()">✕</button>
+  <button class="ib" style="position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px" onclick="pvClose()"><i data-i="x"></i></button>
   <button class="ib" id="pvPrev" style="position:absolute;left:10px" onclick="pvNav(-1)">‹</button>
   <button class="ib" id="pvNext" style="position:absolute;right:10px" onclick="pvNav(1)">›</button>
   <img id="pvImg" alt="">
@@ -224,12 +276,12 @@ input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(15,118,110,.18)}
       <button class="ib" id="tabP" data-v="v,p" onclick="setMode('pen')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
       <button class="ib" id="tabT" data-v="v,t" onclick="setMode('text')"><b style="font-size:19px">أء</b></button>
       <button class="ib" id="tabC" data-v="v" onclick="setMode('crop')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg></button>
-      <button class="ib" data-v="v" onclick="pvEd()">👁</button>
-      <button class="ib" data-v="p" onclick="edUndo()" style="font-size:24px">↶</button>
+      <button class="ib" data-v="v" onclick="pvEd()"><i data-i="eye"></i></button>
+      <button class="ib" data-v="p" onclick="edUndo()" ><i data-i="undo"></i></button>
     </div>
     <div class="tr">
-      <button class="ib" data-v="v" onclick="closeEd()">✕</button>
-      <button class="ib ok" data-v="p,t" onclick="setMode('view')">✓</button>
+      <button class="ib" data-v="v" onclick="closeEd()"><i data-i="x"></i></button>
+      <button class="ib ok" data-v="p,t" onclick="setMode('view')"><i data-i="check"></i></button>
     </div>
   </div>
   <div id="stage">
@@ -244,11 +296,11 @@ input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(15,118,110,.18)}
   <div id="bot">
     <div id="bView" data-v="v">
       <button class="dng" onclick="removeOv()">إزالة التعديلات</button>
-      <button class="ib ok big" onclick="applyEd()">✓</button>
+      <button class="ib ok big" onclick="applyEd()"><i data-i="check"></i></button>
     </div>
     <div id="pnP" data-v="p">
       <div class="chips" style="justify-content:center">
-        <button class="chip" id="pb0" onclick="setPen('e')">🧽 ممحاة</button>
+        <button class="chip" id="pb0" onclick="setPen('e')"><i data-i="eraser"></i> ممحاة</button>
         <button class="chip" id="pb1" onclick="setPen('p',0.6)">رفيع</button>
         <button class="chip" id="pb2" onclick="setPen('p',1.6)">وسط</button>
         <button class="chip" id="pb3" onclick="setPen('p',4)">عريض</button>
@@ -259,20 +311,20 @@ input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(15,118,110,.18)}
     <div id="pnT" data-v="t">
       <div class="mut" style="margin-bottom:8px">اسحب النص لتحريكه، واسحب الدائرة في زاويته لتكبيره أو تصغيره</div>
       <textarea id="edText" rows="4" oninput="edChg()"></textarea>
-      <div style="display:flex;gap:8px;margin-top:10px"><button class="sec" id="spBtn" style="flex:1" onclick="edSplit()">✂️ فصل النص إلى جزئين</button><span id="spCtl" style="display:none;gap:6px"><button class="sec" onclick="edCut(-1)">▲</button><button class="sec" onclick="edCut(1)">▼</button></span></div>
+      <div style="display:flex;gap:8px;margin-top:10px"><button class="sec" id="spBtn" style="flex:1" onclick="edSplit()"><i data-i="scissors"></i> فصل النص إلى جزئين</button><span id="spCtl" style="display:none;gap:6px"><button class="sec" onclick="edCut(-1)">▲</button><button class="sec" onclick="edCut(1)">▼</button></span></div>
       <label style="margin-top:10px">شفافية الخلفية</label><input type="range" id="edOp" min="0" max="1" step="0.05" oninput="edChg()">
       <label class="opt" style="margin-top:10px"><input type="checkbox" id="edUse" onchange="edUseChg()">إدراج النص داخل الصورة</label>
       <label class="opt"><input type="checkbox" id="edCap">إرسال وصف الطلبية أسفل الصورة أيضاً</label>
       <button class="sec" style="width:100%" onclick="edRegen()">إعادة كتابة النص من الطلبية</button>
     </div>
     <div id="bCrop" data-v="c">
-      <button class="ib ok big" onclick="setMode('view')">✓</button>
+      <button class="ib ok big" onclick="setMode('view')"><i data-i="check"></i></button>
       <span class="mut">اسحب زوايا الإطار أو حوافه</span>
-      <button class="ib big" onclick="cropNo()">✕</button>
+      <button class="ib big" onclick="cropNo()"><i data-i="x"></i></button>
     </div>
   </div>
 </div>
-<div id="st2" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--card);border-top:1px solid var(--bd);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));gap:8px;align-items:center"><span style="flex:1">الخطوة 2: أرسل النص تحت الصورة (نفس المحادثة)</span><button class="tg" id="st2b">إرسال النص</button><button class="x" onclick="$('st2').style.display='none'">✕</button></div>
+<div id="st2" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--card);border-top:1px solid var(--bd);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));gap:8px;align-items:center"><span style="flex:1">الخطوة 2: أرسل النص تحت الصورة (نفس المحادثة)</span><button class="tg" id="st2b">إرسال النص</button><button class="x" onclick="$('st2').style.display='none'"><i data-i="x"></i></button></div>
 <div id="toast"></div>
 
 <script>
@@ -297,6 +349,127 @@ function rank(list,q){q=nz(q);var tk=q.split(' '),out=[];
     else{var d=dice(q,n.substr(0,q.length+2));if(d>=0.5)sc=3+(1-d);else return}
     out.push([sc,it])});
   out.sort(function(a,b){return a[0]-b[0]});return out.slice(0,8).map(function(x){return x[1]})}
+var PHL=[],PRL=[];
+function loadLists(){PHL=load('lst_ph',null);if(!PHL){PHL=DB.ph.slice();load('sug_pharm',[]).forEach(function(x){if(PHL.indexOf(x)<0)PHL.push(x)});save('lst_ph',PHL)}
+  PRL=load('lst_pr',null);if(!PRL){PRL=DB.pr.map(function(a){return a.slice()});load('sug_item',[]).forEach(function(x){learnPrIn(x)});save('lst_pr',PRL)}
+  rebuildSug()}
+function rebuildSug(){PH=PHL.map(function(n){return{t:n}});PR=PRL.map(function(a){return{t:a[0],c:a[1]}})}
+function addPh(n){n=(n||'').trim();if(!n)return;var z=nz(n);if(PHL.some(function(x){return nz(x)==z}))return;PHL.unshift(n);save('lst_ph',PHL);rebuildSug()}
+function learnPrIn(n){n=(n||'').trim();if(!n)return false;var z=nz(n);if(PRL.some(function(a){return nz(a[0])==z||nz(a[0]+' -'+a[1])==z}))return false;PRL.unshift([n,'']);return true}
+function learnPr(n){if(learnPrIn(n)){save('lst_pr',PRL);rebuildSug()}}
+function ask(msg,cb){$('dmsg').textContent=msg;$('dlg').classList.remove('hide');$('dok').onclick=function(){dclose();cb()}}
+function dclose(){$('dlg').classList.add('hide')}
+function mgData(k){return k=='ph'?PHL:PRL}
+function mgSave(k){save(k=='ph'?'lst_ph':'lst_pr',mgData(k));rebuildSug()}
+function mgRender(k){var L=mgData(k),q=nz($(k+'Q').value),box=$(k+'List'),idx=[];box.innerHTML='';
+  L.forEach(function(x,i){var t=k=='ph'?x:x[0]+' '+x[1];if(!q||nz(t).indexOf(q)>=0)idx.push(i)});
+  $(k+'Cnt').textContent=idx.length+' من '+L.length+(idx.length>SHOWN[k]?' · المعروض '+SHOWN[k]:'');
+  mgBar(k,idx);idx.slice(0,SHOWN[k]).forEach(function(i){box.appendChild(mgRow(k,i))});
+  if(idx.length>SHOWN[k]){var m=document.createElement('button');m.className='sec';m.style.cssText='width:100%;margin-top:8px';m.textContent='عرض المزيد ('+(idx.length-SHOWN[k])+' متبقي)';m.onclick=function(){SHOWN[k]+=60;mgRender(k)};box.appendChild(m)}}
+function mgBtn(t,fn,c){var b=document.createElement('button');b.className='x';b.innerHTML=ICO[t]?ic(t):t;if(c)b.style.color=c;b.onclick=fn;return b}
+var SHOWN={ph:60,pr:60};
+function mgQ(k){SHOWN[k]=60;mgRender(k)}
+async function inflateRaw(u8){var ds=new DecompressionStream('deflate-raw'),w=ds.writable.getWriter();w.write(u8);w.close();return new Uint8Array(await new Response(ds.readable).arrayBuffer())}
+function unzip(buf){var u=new Uint8Array(buf),dv=new DataView(buf),files={},e=u.length-22;while(e>=0&&dv.getUint32(e,true)!==0x06054b50)e--;if(e<0)throw 1;
+  var n=dv.getUint16(e+10,true),off=dv.getUint32(e+16,true);
+  for(var i=0;i<n;i++){var nl=dv.getUint16(off+28,true),xl=dv.getUint16(off+30,true),cl=dv.getUint16(off+32,true);
+    files[new TextDecoder().decode(u.subarray(off+46,off+46+nl))]={m:dv.getUint16(off+10,true),c:dv.getUint32(off+20,true),o:dv.getUint32(off+42,true)};off+=46+nl+xl+cl}
+  return{u:u,dv:dv,files:files}}
+async function zget(z,name){var f=z.files[name];if(!f)return null;var o=f.o,nl=z.dv.getUint16(o+26,true),xl=z.dv.getUint16(o+28,true),d=z.u.subarray(o+30+nl+xl,o+30+nl+xl+f.c);return f.m==0?d:await inflateRaw(d)}
+function xmlDoc(u8){return new DOMParser().parseFromString(new TextDecoder().decode(u8),'application/xml')}
+function colIdx(r){var m=/^([A-Z]+)/.exec(r),n=0;if(!m)return 0;for(var i=0;i<m[1].length;i++)n=n*26+m[1].charCodeAt(i)-64;return n-1}
+function allT(el){return [].map.call(el.getElementsByTagName('t'),function(t){return t.textContent}).join('')}
+async function xlsxRows(buf){var z=unzip(buf),ss=[],sd=await zget(z,'xl/sharedStrings.xml');
+  if(sd)[].forEach.call(xmlDoc(sd).getElementsByTagName('si'),function(si){ss.push(allT(si))});
+  var nm=Object.keys(z.files).filter(function(k){return /^xl\/worksheets\/sheet\d+\.xml$/.test(k)}).sort()[0],sh=await zget(z,nm),rows=[];
+  [].forEach.call(xmlDoc(sh).getElementsByTagName('row'),function(r){var a=[];
+    [].forEach.call(r.getElementsByTagName('c'),function(c){var t=c.getAttribute('t'),v=c.getElementsByTagName('v')[0],val='';
+      if(t=='s')val=v?ss[+v.textContent]:'';else if(t=='inlineStr')val=allT(c);else val=v?v.textContent:'';a[colIdx(c.getAttribute('r')||'A1')]=val});
+    rows.push(a)});return rows}
+function csvRows(t){var rows=[],row=[],c='',q=false,d=t.indexOf('\t')>=0?'\t':(t.indexOf(';')>=0&&t.indexOf(',')<0?';':',');t=t.replace(/^\uFEFF/,'');
+  for(var i=0;i<t.length;i++){var ch=t[i];if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}
+    else if(ch=='"')q=true;else if(ch==d){row.push(c);c=''}else if(ch=='\n'||ch=='\r'){if(ch=='\r'&&t[i+1]=='\n')i++;row.push(c);rows.push(row);row=[];c=''}else c+=ch}
+  if(c||row.length){row.push(c);rows.push(row)}return rows}
+async function mgImport(k,inp){var f=inp.files[0];inp.value='';if(!f)return;
+  try{var rows=/\.csv$/i.test(f.name)?csvRows(await f.text()):await xlsxRows(await f.arrayBuffer());
+    var L=mgData(k),seen={},add=0,dup=0;
+    L.forEach(function(x){seen[k=='ph'?nz(x):nz(x[0])+'|'+nz(x[1])]=1});
+    rows.forEach(function(r){var a=String(r[0]==null?'':r[0]).trim(),b=String(r[1]==null?'':r[1]).trim();
+      if(!a||/^(pharmacy|product name|name|company|الصيدلية|اسم الصيدلية|المادة|اسم المادة|الاسم)$/i.test(a)||/^(مثال|example)/i.test(a))return;
+      var key=k=='ph'?nz(a):nz(a)+'|'+nz(b);if(seen[key]){dup++;return}seen[key]=1;add++;L.push(k=='ph'?a:[a,b])});
+    mgSave(k);$(k+'Q').value='';SHOWN[k]=60;mgRender(k);toast('تمت إضافة '+add+(dup?' وتجاوز '+dup+' مكرر':'')+' ✅')}
+  catch(e){toast(window.DecompressionStream?'تعذر قراءة الملف، تأكد أنه xlsx أو csv':'المتصفح لا يدعم قراءة xlsx، استخدم csv أو حدّث المتصفح')}}
+function crc32(u){var t=crc32.t;if(!t){t=crc32.t=[];for(var n=0;n<256;n++){var c=n;for(var k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}}var c=-1;for(var i=0;i<u.length;i++)c=t[(c^u[i])&255]^(c>>>8);return(c^-1)>>>0}
+function zipStore(files){var enc=new TextEncoder(),parts=[],cen=[],off=0;
+  files.forEach(function(f){var n=enc.encode(f[0]),d=enc.encode(f[1]),crc=crc32(d),lh=new Uint8Array(30+n.length),v=new DataView(lh.buffer);
+    v.setUint32(0,0x04034b50,true);v.setUint16(4,20,true);v.setUint16(6,0x0800,true);v.setUint32(14,crc,true);v.setUint32(18,d.length,true);v.setUint32(22,d.length,true);v.setUint16(26,n.length,true);lh.set(n,30);parts.push(lh,d);
+    var ch=new Uint8Array(46+n.length),w=new DataView(ch.buffer);w.setUint32(0,0x02014b50,true);w.setUint16(4,20,true);w.setUint16(6,20,true);w.setUint16(8,0x0800,true);w.setUint32(16,crc,true);w.setUint32(20,d.length,true);w.setUint32(24,d.length,true);w.setUint16(28,n.length,true);w.setUint32(42,off,true);ch.set(n,46);cen.push(ch);off+=lh.length+d.length});
+  var cs=cen.reduce(function(a,b){return a+b.length},0),end=new Uint8Array(22),e=new DataView(end.buffer);e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+  return new Blob(parts.concat(cen,[end]),{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})}
+function xlsxBlob(rows){var H='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',N='http://schemas.openxmlformats.org/',R=N+'officeDocument/2006/relationships';
+  var sheet=H+'<worksheet xmlns="'+N+'spreadsheetml/2006/main"><sheetData>'+rows.map(function(r,i){return'<row r="'+(i+1)+'">'+r.map(function(v,j){return'<c r="'+'AB'[j]+(i+1)+'" t="inlineStr"><is><t>'+esc(v)+'</t></is></c>'}).join('')+'</row>'}).join('')+'</sheetData></worksheet>';
+  return zipStore([['[Content_Types].xml',H+'<Types xmlns="'+N+'package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>'],
+    ['_rels/.rels',H+'<Relationships xmlns="'+N+'package/2006/relationships"><Relationship Id="rId1" Type="'+R+'/officeDocument" Target="xl/workbook.xml"/></Relationships>'],
+    ['xl/workbook.xml',H+'<workbook xmlns="'+N+'spreadsheetml/2006/main" xmlns:r="'+R+'"><sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets></workbook>'],
+    ['xl/_rels/workbook.xml.rels',H+'<Relationships xmlns="'+N+'package/2006/relationships"><Relationship Id="rId1" Type="'+R+'/worksheet" Target="worksheets/sheet1.xml"/></Relationships>'],
+    ['xl/worksheets/sheet1.xml',sheet]])}
+function dlTemplate(k){var rows=k=='ph'?[['Pharmacy'],['مثال: صيدلية الأمل'],['مثال: صيدلية النور']]:[['Product Name','Company'],['Example Product 500mg','United'],['Example Syrup 100ml','Desma']];
+  var b=xlsxBlob(rows),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=k=='ph'?'template_pharmacies.xlsx':'template_products.xlsx';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},8000);toast('تم تنزيل النموذج 📄')}
+var ICO={
+pkg:'<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>',
+sliders:'<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>',
+sun:'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>',
+moon:'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
+plus:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>',
+trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
+edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+eye:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+check:'<polyline points="20 6 9 17 4 12"/>',
+scissors:'<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/>',
+dl:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>',
+type:'<polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>',
+list:'<line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/>',
+smile:'<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>',
+brief:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+cross:'<rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>',
+pill:'<path d="M10.5 20.5a4.95 4.95 0 0 1-7-7l10-10a4.95 4.95 0 0 1 7 7z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/>',
+chev:'<polyline points="15 18 9 12 15 6"/>',
+undo:'<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>',
+checksq:'<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+eraser:'<path d="M20 20H8L3.5 15.5a1.4 1.4 0 0 1 0-2L13.5 3.5a1.4 1.4 0 0 1 2 0L20.5 8.5a1.4 1.4 0 0 1 0 2L11 20"/>'};
+function ic(n){return '<svg class="i" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ICO[n]+'</svg>'}
+function hydrate(root){(root||document).querySelectorAll('[data-i]').forEach(function(e){e.innerHTML=ic(e.getAttribute('data-i'))})}
+function g1(v){v=(v||'').trim();if(!v)return '';try{if(window.Intl&&Intl.Segmenter){var it=new Intl.Segmenter(undefined,{granularity:'grapheme'}).segment(v)[Symbol.iterator]().next();if(it.value)return it.value.segment}}catch(e){}return Array.from(v)[0]}
+function emInput(cb){var i=document.createElement('input');i.className='emi';i.placeholder='＋';i.setAttribute('inputmode','text');i.oninput=function(){var v=g1(i.value);if(v)cb(v)};return i}
+var MODE={ph:false,pr:false},SEL={ph:{},pr:{}};
+function mgBar(k,idx){var b=$(k+'Bar');b.innerHTML='';
+  function bt(t,c,fn){var e=document.createElement('button');e.className=c;e.innerHTML=t;e.style.padding='9px 12px';e.onclick=fn;b.appendChild(e)}
+  bt(MODE[k]?'إلغاء التحديد':ic('checksq')+' تحديد متعدد','sec',function(){MODE[k]=!MODE[k];SEL[k]={};mgRender(k)});
+  if(!MODE[k])return;
+  var n=Object.keys(SEL[k]).length;
+  bt('تحديد الكل ('+idx.length+')','sec',function(){idx.forEach(function(i){SEL[k][i]=true});mgRender(k)});
+  bt(ic('trash')+' حذف المحدد ('+n+')','dng',function(){if(!n){toast('حدد عنصراً واحداً على الأقل');return}
+    ask('حذف '+n+' عنصر نهائياً؟',function(){var L=mgData(k),del=SEL[k],keep=L.filter(function(x,i){return !del[i]});L.length=0;keep.forEach(function(x){L.push(x)});SEL[k]={};MODE[k]=false;mgSave(k);mgRender(k);toast('تم حذف '+n+' نهائياً 🗑')})})}
+function mgRow(k,i){var L=mgData(k),x=L[i],r=document.createElement('div');r.className='row';
+  var txt=k=='ph'?x:(x[1]?x[0]+' — '+x[1]:x[0]);
+  if(MODE[k]){var cb=document.createElement('input');cb.type='checkbox';cb.checked=!!SEL[k][i];cb.style.cssText='width:24px;height:24px;flex:none';
+    var l2=document.createElement('div');l2.style.cssText='flex:1;min-width:0;overflow-wrap:anywhere';l2.textContent=txt;
+    function tg(){if(SEL[k][i])delete SEL[k][i];else SEL[k][i]=true;mgRender(k)}
+    cb.onchange=tg;l2.onclick=tg;r.appendChild(cb);r.appendChild(l2);return r}
+  var l=document.createElement('div');l.style.cssText='flex:1;min-width:0;overflow-wrap:anywhere';l.textContent=txt;r.appendChild(l);
+  r.appendChild(mgBtn('edit',function(){mgEdit(k,i,r)},'var(--pri)'));
+  r.appendChild(mgBtn('trash',function(){ask('حذف «'+(k=='ph'?x:x[0])+'» نهائياً؟',function(){var j=L.indexOf(x);if(j>=0)L.splice(j,1);mgSave(k);mgRender(k);toast('تم الحذف نهائياً 🗑')})}));return r}
+function mgEdit(k,i,r){var L=mgData(k),x=L[i],a=document.createElement('input'),b=null;r.innerHTML='';a.value=k=='ph'?x:x[0];r.appendChild(a);
+  if(k=='pr'){b=document.createElement('input');b.value=x[1];b.placeholder='الشركة';b.style.width='110px';b.style.flex='none';r.appendChild(b)}
+  r.appendChild(mgBtn('check',function(){var v=a.value.trim();if(!v)return;L[i]=k=='ph'?v:[v,b.value.trim()];mgSave(k);mgRender(k);toast('تم الحفظ ✅')},'var(--pri)'));
+  r.appendChild(mgBtn('x',function(){mgRender(k)}))}
+function mgAdd(k){var v=$(k+'New').value.trim();if(!v)return;if(k=='ph')PHL.unshift(v);else PRL.unshift([v,$('prCo').value.trim()]);$(k+'New').value='';if(k=='pr')$('prCo').value='';mgSave(k);$(k+'Q').value='';mgRender(k);toast('تمت الإضافة ✅')}
+function isDark(){var t=document.documentElement.getAttribute('data-theme');if(t)return t=='dark';return !!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)}
+function applyTheme(){var t=load('theme',null);if(t)document.documentElement.setAttribute('data-theme',t);else document.documentElement.removeAttribute('data-theme');$('thBtn').innerHTML=ic(isDark()?'sun':'moon')}
+function toggleTheme(){save('theme',isDark()?'light':'dark');applyTheme()}
 function suggest(inp,src,min){
   var box=document.createElement('div');box.className='sug';box.style.display='none';
   inp.parentNode.appendChild(box);
@@ -318,11 +491,13 @@ function remember(key,val){val=val.trim();if(!val)return;var l=load(key,[]);
 
 /* الصفوف */
 function addDist(v){var r=document.createElement('div');r.className='row';
-  r.innerHTML='<div class="rel"><input class="dn" placeholder="اسم المذخر" autocomplete="off"></div><button class="x" onclick="rm(this)">✕</button>';
-  $('dists').appendChild(r);var i=r.querySelector('input');i.value=v||'';suggest(i,function(){return L('sug_dist')},2)}
+  r.innerHTML='<div class="rel"><input class="dn" placeholder="اسم المذخر" autocomplete="off"></div><button class="x" onclick="rm(this)"><i data-i="x"></i></button>';
+  hydrate(r);$('dists').appendChild(r);var i=r.querySelector('input');i.value=v||'';suggest(i,function(){return L('sug_dist')},2)}
+function bxUpd(r){var ib=r.querySelector('.ibn'),g=r.querySelector('.pg');g.firstChild.textContent=ib.value;g.style.display=ib.value.trim()?'flex':'none';var qv=r.querySelector('.iq').value.trim(),q=parseFloat(qv),p=parseFloat(r.querySelector('.ibn').value),b=r.querySelector('.bxl');
+  if(q>0&&p>0){var e=Math.floor(q*p/100);b.innerHTML='<bdi dir="ltr">'+esc(qv)+' +'+e+'</bdi> · الإجمالي <bdi dir="ltr">'+(q+e)+'</bdi>';b.style.display='block'}else b.style.display='none'}
 function addItem(n,q,bp){var r=document.createElement('div');r.className='row';
-  r.innerHTML='<div class="rel"><input class="in" placeholder="اسم المادة (أول 3 أحرف)" autocomplete="off"></div><input class="qty iq" inputmode="numeric" placeholder="العدد"><input class="qty ibn" inputmode="decimal" placeholder="بونص %"><button class="x" onclick="rm(this)">✕</button>';
-  $('items').appendChild(r);var i=r.querySelector('.in');i.value=n||'';r.querySelector('.iq').value=q||'';r.querySelector('.ibn').value=bp||'';suggest(i,function(){return PR.concat(L('sug_item'))},3)}
+  r.innerHTML='<div class="rel"><input class="in" placeholder="اسم المادة (أول 3 أحرف)" autocomplete="off"></div><input class="qty iq" inputmode="numeric" placeholder="العدد"><div class="pw"><input class="qty ibn" inputmode="decimal" placeholder="%" dir="ltr"><span class="pg"><span></span>%</span></div><button class="x" onclick="rm(this)"><i data-i="x"></i></button><div class="bxl"></div>';
+  hydrate(r);$('items').appendChild(r);var i=r.querySelector('.in');i.value=n||'';r.querySelector('.iq').value=q||'';r.querySelector('.ibn').value=bp||'';suggest(i,function(){return PR},3);var up=function(){bxUpd(r)};r.querySelector('.iq').addEventListener('input',up);r.querySelector('.ibn').addEventListener('input',up);up()}
 function rm(b){var p=b.parentNode,c=p.parentNode;if(c.children.length>1)p.remove();else p.querySelectorAll('input').forEach(function(i){i.value=''})}
 
 /* الصورة */
@@ -334,7 +509,7 @@ function pickImg(f){var files=[].slice.call(f.files);f.value='';files.forEach(fu
 function showImg(){var t=$('thumbs');t.innerHTML='';var o=collect();IMGS.forEach(function(it,i){
   var d=document.createElement('div');d.className='thumb';var im=document.createElement('img');im.src=(it.ov||it.im)&&it.el?composed(o,it):it.img;d.appendChild(im);
   var b=document.createElement('div');b.className='tb';
-  [['👁',function(){pvOpen(i)}],['✏️',function(){editImg(i)}],['✕',function(){delImg(i)}]].forEach(function(a){var bt=document.createElement('button');bt.textContent=a[0];bt.onclick=a[1];b.appendChild(bt)});
+  [['eye',function(){pvOpen(i)}],['edit',function(){editImg(i)}],['x',function(){delImg(i)}]].forEach(function(a){var bt=document.createElement('button');bt.innerHTML=ic(a[0]);bt.onclick=a[1];b.appendChild(bt)});
   d.appendChild(b);t.appendChild(d)})}
 function clearImg(){IMGS=[];showImg()}
 function delImg(i){IMGS.splice(i,1);showImg()}
@@ -353,27 +528,28 @@ function collect(){
     items:[].map.call(document.querySelectorAll('#items .row'),function(r){return{n:r.querySelector('.in').value.trim(),q:r.querySelector('.iq').value.trim(),b:r.querySelector('.ibn').value.trim()}}).filter(function(x){return x.n}),
     note:$('note').value.trim(),imgs:IMGS}}
 function valid(o){if(!o.pharm){toast('اكتب اسم الصيدلية');return false}if(!o.items.length){toast('أضف مادة واحدة على الأقل');return false}return true}
-function learn(o){remember('sug_pharm',o.pharm);o.dists.forEach(function(d){remember('sug_dist',d)});o.items.forEach(function(i){remember('sug_item',i.n)})}
+function learn(o){addPh(o.pharm);o.dists.forEach(function(d){remember('sug_dist',d)});o.items.forEach(function(i){learnPr(i.n)})}
 var STY={bold:['عريض','*','font-weight:700'],italic:['مائل','_','font-style:italic'],strike:['يتوسطه خط','~','text-decoration:line-through'],mono:['خط ثابت','```','font-family:monospace'],none:['عادي','','']};
 var NUM={num:'1.',enum:'1️⃣',dot:'•',check:'✅',blue:'🔹',pill:'💊',star:'⭐'};
-function numStr(k,i){if(k=='num')return (i+1)+'. ';if(k=='enum')return String(i+1).split('').map(function(d){return d+'\uFE0F\u20E3'}).join('')+' ';return NUM[k]+' '}
+function numStr(k,i,c){if(k=='custom')return(c||'•')+' ';if(k=='num')return (i+1)+'. ';if(k=='enum')return String(i+1).split('').map(function(d){return d+'\uFE0F\u20E3'}).join('')+' ';return NUM[k]+' '}
 var EMO={pharm:['الصيدلية',['🏥','💊','🏪','⚕️']],dist:['المذخر',['🏢','🚚','🏭','📍']],items:['المواد',['📦','💊','📋','🛍️']],note:['الملاحظة',['📝','💬','⚠️','📌']],coop:['بالتعاون مع',['🤝','👥','🔗','✍️']],date:['التاريخ',['📅','🕒','🗓️','⏰']]};
-function getSt(){var s=load('st',{}),em={};for(var k in EMO)em[k]=(s.em&&s.em[k]!=null)?s.em[k]:EMO[k][1][0];var d=s.style||(s.bold===false?'none':'bold'),sty={};['pharm','dist','items','note'].forEach(function(k){sty[k]=(s.sty&&s.sty[k])||d});return{num:s.num||'num',sty:sty,emoji:s.emoji!==false,date:s.date!==false,em:em}}
+function getSt(){var s=load('st',{}),em={};for(var k in EMO)em[k]=(s.em&&s.em[k]!=null)?s.em[k]:EMO[k][1][0];var d=s.style||(s.bold===false?'none':'bold'),sty={};['pharm','dist','items','note'].forEach(function(k){sty[k]=(s.sty&&s.sty[k])||d});return{numc:s.numc||'',num:s.num||'num',sty:sty,emoji:s.emoji!==false,date:s.date!==false,em:em}}
 function setOpt(k,v){var s=getSt();s[k]=v;save('st',s);renderSet()}
 function setSty(k,v){var s=getSt();s.sty[k]=v;save('st',s);renderSet()}
 function setEm(k,v){var s=getSt();s.em[k]=v;save('st',s);renderSet()}
 function chip(t,on,fn,sty){var b=document.createElement('button');b.className='chip'+(on?' on':'');b.textContent=t;if(sty)b.style.cssText=sty;b.onclick=fn;return b}
-var PGS=['home','form','sMenu','sFont','sNum','sEmoji','sComp'];
-function go(p){PGS.forEach(function(x){$(x).classList.toggle('hide',x!=p)});window.scrollTo(0,0);if(p=='home')renderList()}
+var PGS=['home','form','sMenu','sFont','sNum','sEmoji','sComp','sPh','sPr'];
+function go(p){PGS.forEach(function(x){$(x).classList.toggle('hide',x!=p)});window.scrollTo(0,0);if(p=='home')renderList();if(p=='sPh'){SHOWN.ph=60;mgRender('ph')}if(p=='sPr'){SHOWN.pr=60;mgRender('pr')}}
 function sample(){return{pharm:'\u0635\u064a\u062f\u0644\u064a\u0629 \u0627\u0644\u0623\u0645\u0644',coop:'\u0641\u0644\u0627\u0646',dists:['\u0645\u0630\u062e\u0631 \u0627\u0644\u0646\u0648\u0631'],items:[{n:'Alvear Junior -Desma',q:'20',b:'30'},{n:'Capsolin Revulsivo -Desma',q:'10'}],note:'\u062a\u0648\u0635\u064a\u0644 \u0635\u0628\u0627\u062d\u0627\u064b',date:new Date().toISOString()}}
 function renderSet(){var s=getSt();$('cbEmoji').checked=s.emoji;$('cbDate').checked=s.date;
   var fo=$('fontOpts');fo.innerHTML='';
-  [['pharm','\u0627\u0633\u0645 \u0627\u0644\u0635\u064a\u062f\u0644\u064a\u0629'],['dist','\u0627\u0633\u0645 \u0627\u0644\u0645\u0630\u062e\u0631'],['items','\u0623\u0633\u0645\u0627\u0621 \u0627\u0644\u0645\u0648\u0627\u062f \u0648\u0623\u0639\u062f\u0627\u062f\u0647\u0627'],['note','\u0627\u0644\u0645\u0644\u0627\u062d\u0638\u0629 (\u0648\u0628\u0627\u0644\u062a\u0639\u0627\u0648\u0646)']].forEach(function(p){
+  [['pharm','\u0627\u0633\u0645 \u0627\u0644\u0635\u064a\u062f\u0644\u064a\u0629'],['dist','\u0627\u0633\u0645 \u0627\u0644\u0645\u0630\u062e\u0631'],['items','\u0627\u0644\u0639\u062f\u062f \u0648\u0627\u0644\u062a\u0631\u0642\u064a\u0645'],['note','\u0627\u0644\u0645\u0644\u0627\u062d\u0638\u0629 (\u0648\u0628\u0627\u0644\u062a\u0639\u0627\u0648\u0646)']].forEach(function(p){
     var r=document.createElement('div');r.className='fr';var l=document.createElement('div');l.className='mut';l.style.marginBottom='6px';l.textContent=p[1];r.appendChild(l);
     var c=document.createElement('div');c.className='chips';Object.keys(STY).forEach(function(k){c.appendChild(chip(STY[k][0],s.sty[p[0]]==k,function(){setSty(p[0],k)},STY[k][2]))});r.appendChild(c);fo.appendChild(r)});
   var no=$('numOpts');no.innerHTML='';Object.keys(NUM).forEach(function(k){no.appendChild(chip(k=='enum'?'1\ufe0f\u20e3 2\ufe0f\u20e3 3\ufe0f\u20e3':k=='num'?'1. 2. 3.':NUM[k]+' '+NUM[k]+' '+NUM[k],s.num==k,function(){setOpt('num',k)}))});
+  if(s.numc)no.appendChild(chip(s.numc+' '+s.numc+' '+s.numc,s.num=='custom',function(){setOpt('num','custom')}));no.appendChild(emInput(function(v){var st=getSt();st.num='custom';st.numc=v;save('st',st);renderSet()}));
   var eo=$('emOpts');eo.innerHTML='';eo.style.display=s.emoji?'block':'none';
-  Object.keys(EMO).forEach(function(k){var r=document.createElement('div');r.className='emr';var sp=document.createElement('span');sp.textContent=EMO[k][0];r.appendChild(sp);var d=document.createElement('div');EMO[k][1].concat(['']).forEach(function(x){d.appendChild(chip(x||'بدون',s.em[k]==x,function(){setEm(k,x)}))});r.appendChild(d);eo.appendChild(r)});
+  Object.keys(EMO).forEach(function(k){var r=document.createElement('div');r.className='emr';var sp=document.createElement('span');sp.textContent=EMO[k][0];r.appendChild(sp);var d=document.createElement('div');var opts=EMO[k][1].slice();if(s.em[k]&&opts.indexOf(s.em[k])<0)opts.push(s.em[k]);opts.concat(['']).forEach(function(x){d.appendChild(chip(x||'بدون',s.em[k]==x,function(){setEm(k,x)}))});d.appendChild(emInput(function(v){setEm(k,v)}));r.appendChild(d);eo.appendChild(r)});
   var h=text(sample(),true);$('pvF').innerHTML=h;$('pvN').innerHTML=h;$('pvE').innerHTML=h}
 function qs(x){var q=parseFloat(x.q),p=parseFloat(x.b);if(q>0&&p>0){var e=Math.floor(q*p/100);if(e>0)return '\u202A'+x.q+' +'+e+'\u202C'}return x.q}
 function text(o,h,pl){var S=getSt();if(pl)for(var k in S.sty)S.sty[k]='none';
@@ -381,7 +557,7 @@ function text(o,h,pl){var S=getSt();if(pl)for(var k in S.sty)S.sty[k]='none';
   function e(k){return S.emoji&&S.em[k]?S.em[k]+' ':''}
   var t=e('pharm')+b('الصيدلية: '+o.pharm,'pharm')+'\n';
   if(o.dists.length)t+=e('dist')+b('المذخر: '+o.dists.join('، '),'dist')+'\n';
-  t+='\n'+e('items')+b('المواد:','items')+'\n';o.items.forEach(function(x,i){t+=numStr(S.num,i)+b(x.n+(x.q?' - عدد: '+qs(x):''),'items')+'\n'});
+  t+='\n'+e('items')+b('المواد:','items')+'\n';o.items.forEach(function(x,i){t+=b(numStr(S.num,i,S.numc).trim(),'items')+' '+x.n+(x.q?' - '+b('عدد: '+qs(x),'items'):'')+'\n'});
   if(o.coop)t+='\n'+e('coop')+b('بالتعاون مع: '+o.coop,'note')+'\n';
   if(o.note)t+='\n'+e('note')+b('ملاحظة: '+o.note,'note')+'\n';
   if(S.date)t+='\n'+e('date')+new Date(o.date).toLocaleString('ar-IQ');
@@ -478,7 +654,7 @@ function drawEd(){if(!ED||!baseImg)return;var c=$('cv'),W0=FL.width,H0=FL.height
     x.moveTo(mx-L/2,y1);x.lineTo(mx+L/2,y1);x.moveTo(mx-L/2,y2);x.lineTo(mx+L/2,y2);x.moveTo(x1,my-L/2);x.lineTo(x1,my+L/2);x.moveTo(x2,my-L/2);x.lineTo(x2,my+L/2);x.stroke()}
   else{var sw=Math.round(r.w*W0),sh=Math.round(r.h*H0);c.width=sw;c.height=sh;fitCv();x=c.getContext('2d');x.drawImage(FL,r.x*W0,r.y*H0,sw,sh,0,0,sw,sh);if(ED.use)TB=drawOv(x,sw,sh,ED.t,ED.mode!='pen')}}
 function edChg(){ED.t.text=$('edText').value;ED.t.op=parseFloat($('edOp').value);drawEd()}
-function syncSplit(){var T=ED.t;$('spBtn').textContent=T.split?'↩ دمج النص في مربع واحد':'✂️ فصل النص إلى جزئين';$('spCtl').style.display=T.split?'flex':'none'}
+function syncSplit(){var T=ED.t;$('spBtn').innerHTML=T.split?ic('undo')+' دمج النص في مربع واحد':ic('scissors')+' فصل النص إلى جزئين';$('spCtl').style.display=T.split?'flex':'none'}
 function edSplit(){var T=ED.t;if(!T.split){var n=T.text.split('\n').length;T.split=true;T.cut=Math.max(1,Math.ceil(n/2));T.x2=T.x;T.y2=0.75;T.y=0.25;T.size2=T.size;ED.use=true;$('edUse').checked=true}else T.split=false;syncSplit();drawEd()}
 function edCut(d){var T=ED.t,n=T.text.split('\n').length;T.cut=Math.max(1,Math.min(Math.max(1,n-1),(T.cut||1)+d));drawEd()}
 function edUseChg(){ED.use=$('edUse').checked;drawEd()}
@@ -519,13 +695,13 @@ function getComps(){return load('comps',[])}
 function addComp(){var v=$('compIn').value.trim();if(!v)return;var l=getComps();if(l.indexOf(v)<0){l.push(v);save('comps',l)}$('compIn').value='';renderComps()}
 function delComp(i){var l=getComps();l.splice(i,1);save('comps',l);renderComps()}
 function renderComps(){var l=getComps(),cl=$('compList'),ab=$('addBtns');cl.innerHTML='';ab.innerHTML='';
-  l.forEach(function(c,i){cl.appendChild(chip(c+' ✕',false,function(){delComp(i)}))});
+  l.forEach(function(c,i){cl.appendChild(chip(c+' ×',false,function(){delComp(i)}))});
   function big(t,fn){var b=chip(t,false,fn);b.className='sec';b.style.padding='10px 16px';ab.appendChild(b)}
   if(!l.length)big('+ إضافة مادة',function(){addItem()});
   else l.forEach(function(c){big(c,function(){compItem(c)})})}
 function compItem(c){var rows=document.querySelectorAll('#items .row'),inp=rows[rows.length-1].querySelector('.in'),v=inp.value.trim();if(!v){toast('اكتب اسم المادة أولاً');return}if(v.toLowerCase().slice(-(c.length+2))!=(' -'+c).toLowerCase())inp.value=v+' -'+c;addItem();var n=document.querySelectorAll('#items .in');n[n.length-1].focus()}
-function sendWA(){share(collect(),'wa')}
-function sendTG(){share(collect(),'tg')}
+function sendWA(){var o=collect();if(!valid(o))return;share(o,'wa');goHome()}
+function sendTG(){var o=collect();if(!valid(o))return;share(o,'tg');goHome()}
 
 /* الواجهة */
 function reset(){$('pharm').value='';$('coop').value='';$('note').value='';$('dists').innerHTML='';$('items').innerHTML='';clearImg()}
@@ -534,12 +710,14 @@ function openOrder(id){var o=load('orders',[]).filter(function(x){return x.id===
   cur=o;reset();$('pharm').value=o.pharm;$('coop').value=o.coop||'';$('note').value=o.note||'';
   (o.dists.length?o.dists:['']).forEach(addDist);o.items.forEach(function(i){addItem(i.n,i.q,i.b)});IMGS=(o.imgs||(o.img?[{img:o.img,ov:o.ov,im:o.im}]:[])).map(function(x){return mk(x.img,x.ov,x.im)});showImg();
   $('home').classList.add('hide');$('form').classList.remove('hide');window.scrollTo(0,0)}
-function delOrder(id){if(!confirm('حذف هذه الطلبية؟'))return;save('orders',load('orders',[]).filter(function(x){return x.id!==id}));renderList()}
+function delOrder(id){ask('حذف هذه الطلبية نهائياً؟',function(){save('orders',load('orders',[]).filter(function(x){return x.id!==id}));renderList()})}
 function goHome(){$('form').classList.add('hide');$('home').classList.remove('hide');renderList()}
 function renderList(){var l=load('orders',[]);$('cnt').textContent=l.length?l.length+' طلبية':'';
   $('list').innerHTML=l.length?l.map(function(o){return'<div class="card ord" style="margin-bottom:8px"><div><b>'+esc(o.pharm)+'</b><div class="mut">'+o.items.length+' مادة · '+new Date(o.date).toLocaleDateString('ar-IQ')+'</div></div><div class="btns"><button class="sec" onclick="openOrder('+o.id+')">فتح</button><button class="dng" onclick="delOrder('+o.id+')">حذف</button></div></div>'}).join(''):'<div class="mut">لا توجد طلبيات محفوظة بعد.</div>'}
 
-suggest($('pharm'),function(){return PH.concat(L('sug_pharm'))},3);
+suggest($('pharm'),function(){return PH},3);
+hydrate();loadLists();
+applyTheme();
 renderSet();
 renderComps();
 renderList();
