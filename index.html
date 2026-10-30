@@ -143,6 +143,8 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
 .pw .qty{width:100%}
 .pg{position:absolute;left:13px;top:0;bottom:0;display:none;align-items:center;pointer-events:none;white-space:pre;direction:ltr;color:var(--mut)}
 .pg span{visibility:hidden}
+.about h3{margin:0 0 8px;font-size:17px;color:var(--pri)}
+.about ul{margin:0;padding-inline-start:20px;line-height:1.9}
 .sig{text-align:center;color:var(--mut);font-size:14px;margin:18px 0 8px}
 .sig a{color:var(--pri);text-decoration:none;font-weight:700}
 </style>
@@ -227,6 +229,14 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
   </div>
   <div class="mut" style="margin-bottom:6px">النموذج</div><div class="pv" id="pvE"></div>
 </div>
+<div id="sAbout" class="hide">
+  <div class="top"><h1><i data-i="info"></i> ميزات التطبيق</h1><button class="sec" onclick="go('home')">رجوع</button></div>
+  <div class="card about"><h3>إنشاء الأوردر</h3><ul><li>اقتراح اسم الصيدلية من أول 3 أحرف (559 صيدلية جاهزة) حتى مع اختلاف الكتابة والأسماء المتشابهة</li><li>إضافة أكثر من مذخر مع اقتراح الأسماء المستعملة سابقاً</li><li>اقتراح المواد من أول 3 أحرف مع اسم الشركة (317 منتجاً جاهزاً)</li><li>إضافة أي عدد من المواد مع العدد لكل مادة</li><li>حقل النسبة % يحسب الكمية الإضافية تلقائياً ويعرض الإجمالي مباشرة (مثل 10 +1)</li><li>أزرار الشركات: ضغطة واحدة تضيف اسم الشركة للمادة وتفتح حقلاً جديداً</li><li>حقلان اختياريان: بالتعاون مع، والملاحظة</li></ul></div>
+  <div class="card about"><h3>الصور والتحرير</h3><ul><li>إضافة أكثر من صورة للأوردر الواحد مع معاينة بزر العين</li><li>قص الصورة بإطار واضح تسحب زواياه وحوافه</li><li>قلم وممحاة بألوان وأحجام مختلفة مع زر تراجع</li><li>نسخ وصف الطلبية داخل الصورة تلقائياً بالاتجاه الصحيح للكتابة</li><li>تحريك النص بالسحب وتكبيره وتصغيره بحرية من الدائرة في زاويته</li><li>تعديل كلام النص واختيار لون الكتابة ولون الخلفية وشفافيتها</li><li>فصل النص إلى جزئين في مكانين مختلفين إذا ضاقت الصورة</li><li>خيار إرسال الوصف أسفل الصورة أو الاكتفاء بالنص داخلها</li></ul></div>
+  <div class="card about"><h3>الإرسال والحفظ</h3><ul><li>إرسال الطلبية عبر واتساب بوصف مرتب مع كل الصور</li><li>حفظ تلقائي عند الإرسال، وزر حفظ يدوي</li><li>فتح الطلبيات المحفوظة وتعديلها وإعادة إرسالها أو حذفها</li></ul></div>
+  <div class="card about"><h3>الإعدادات</h3><ul><li>تنسيق الخط لكل جزء: الصيدلية، المذخر، العدد والترقيم، الملاحظة (عريض، مائل، يتوسطه خط، خط ثابت، عادي)</li><li>ترقيم المواد بأرقام عادية أو إيموجي أو رموز، مع إضافة رمز خاص من الكيبورد</li><li>اختيار إيموجي لكل حقل أو إخفاؤه، مع إضافة إيموجي من الكيبورد، وإظهار التاريخ أو إخفاؤه</li><li>إضافة الشركات وحذفها</li><li>إدارة الصيدليات والمواد المقترحة: إضافة وتعديل وحذف فردي أو جماعي، بحث، وعرض المزيد</li><li>استيراد الصيدليات والمواد من ملف Excel مع تنزيل نموذج جاهز</li><li>معاينة مباشرة لكل إعداد قبل اعتماده</li></ul></div>
+  <div class="card about"><h3>عام</h3><ul><li>يعمل بدون إنترنت ومعه، وإنما الإنترنت للإرسال فقط</li><li>وضع نهاري وليلي</li><li>حركات ناعمة وأيقونات بسيطة</li><li>واجهة عربية كاملة تعمل على الهاتف والكمبيوتر بدون تثبيت</li></ul></div>
+</div>
 <div id="sPh" class="hide">
   <div class="top"><h1>الصيدليات المقترحة</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
   <div class="card">
@@ -262,6 +272,7 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
   </div>
 </div>
 </div>
+<div class="sig" style="margin-bottom:0"><button class="sec" onclick="go('sAbout')"><i data-i="info"></i> ميزات التطبيق</button></div>
 <div class="sig">علي كريم : <a href="tel:07831698069" dir="ltr">07831698069</a></div>
 <div id="dlg" class="hide"><div class="dbox"><div id="dmsg"></div><div class="acts"><button class="dng" id="dok">حذف نهائي</button><button class="sec" onclick="dclose()">إلغاء</button></div></div></div>
 <div id="pvBox" class="hide">
@@ -416,6 +427,7 @@ function xlsxBlob(rows){var H='<?xml version="1.0" encoding="UTF-8" standalone="
 function dlTemplate(k){var rows=k=='ph'?[['Pharmacy'],['مثال: صيدلية الأمل'],['مثال: صيدلية النور']]:[['Product Name','Company'],['Example Product 500mg','United'],['Example Syrup 100ml','Desma']];
   var b=xlsxBlob(rows),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=k=='ph'?'template_pharmacies.xlsx':'template_products.xlsx';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},8000);toast('تم تنزيل النموذج 📄')}
 var ICO={
+info:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
 pkg:'<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>',
 sliders:'<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>',
 sun:'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>',
@@ -538,7 +550,7 @@ function setOpt(k,v){var s=getSt();s[k]=v;save('st',s);renderSet()}
 function setSty(k,v){var s=getSt();s.sty[k]=v;save('st',s);renderSet()}
 function setEm(k,v){var s=getSt();s.em[k]=v;save('st',s);renderSet()}
 function chip(t,on,fn,sty){var b=document.createElement('button');b.className='chip'+(on?' on':'');b.textContent=t;if(sty)b.style.cssText=sty;b.onclick=fn;return b}
-var PGS=['home','form','sMenu','sFont','sNum','sEmoji','sComp','sPh','sPr'];
+var PGS=['home','form','sMenu','sFont','sNum','sEmoji','sComp','sPh','sPr','sAbout'];
 function go(p){PGS.forEach(function(x){$(x).classList.toggle('hide',x!=p)});window.scrollTo(0,0);if(p=='home')renderList();if(p=='sPh'){SHOWN.ph=60;mgRender('ph')}if(p=='sPr'){SHOWN.pr=60;mgRender('pr')}}
 function sample(){return{pharm:'\u0635\u064a\u062f\u0644\u064a\u0629 \u0627\u0644\u0623\u0645\u0644',coop:'\u0641\u0644\u0627\u0646',dists:['\u0645\u0630\u062e\u0631 \u0627\u0644\u0646\u0648\u0631'],items:[{n:'Alvear Junior -Desma',q:'20',b:'30'},{n:'Capsolin Revulsivo -Desma',q:'10'}],note:'\u062a\u0648\u0635\u064a\u0644 \u0635\u0628\u0627\u062d\u0627\u064b',date:new Date().toISOString()}}
 function renderSet(){var s=getSt();$('cbEmoji').checked=s.emoji;$('cbDate').checked=s.date;
