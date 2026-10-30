@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>طلبيات المندوب</title>
+<title>ezORDER</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22fa%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%232dd4bf%22/%3E%3Cstop offset=%22.55%22 stop-color=%22%230d9488%22/%3E%3Cstop offset=%221%22 stop-color=%22%23115e59%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22fb%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23fde047%22/%3E%3Cstop offset=%221%22 stop-color=%22%23f59e0b%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22fc%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%2314b8a6%22/%3E%3Cstop offset=%221%22 stop-color=%22%230f766e%22/%3E%3C/linearGradient%3E%3CclipPath id=%22fk%22%3E%3Crect width=%22512%22 height=%22512%22 rx=%22116%22/%3E%3C/clipPath%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 rx=%22116%22 fill=%22url(%23fa)%22/%3E%3Cpath clip-path=%22url(%23fk)%22 d=%22M0 0H512V190C390 140 190 190 0 110Z%22 fill=%22%23fff%22 opacity=%22.1%22/%3E%3Crect x=%22132%22 y=%22108%22 width=%22248%22 height=%22320%22 rx=%2240%22 fill=%22%23000%22 opacity=%22.2%22/%3E%3Crect x=%22132%22 y=%2296%22 width=%22248%22 height=%22320%22 rx=%2240%22 fill=%22%23fff%22/%3E%3Crect x=%22170%22 y=%22144%22 width=%22120%22 height=%2224%22 rx=%2212%22 fill=%22%2399f6e4%22/%3E%3Crect x=%22170%22 y=%22190%22 width=%2284%22 height=%2224%22 rx=%2212%22 fill=%22%23ccfbf1%22/%3E%3Cpath d=%22M186 316l50 50 92-112%22 fill=%22none%22 stroke=%22url(%23fc)%22 stroke-width=%2240%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%22376%22 cy=%22132%22 r=%2260%22 fill=%22url(%23fb)%22 stroke=%22%230d9488%22 stroke-width=%2210%22/%3E%3Cpath d=%22M388 98L350 140H372L362 168L402 122H380Z%22 fill=%22%23fff%22/%3E%3C/svg%3E">
+<meta name="apple-mobile-web-app-title" content="ezORDER">
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f3f6f5;--card:#fff;--tx:#14211d;--mut:#667570;--bd:#d9e2df;--pri:#0f766e;--pt:#fff;--dng:#c0392b}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1715;--card:#18231f;--tx:#e8f0ed;--mut:#93a39d;--bd:#2a3a35;--pri:#2bb3a5;--pt:#06201c;--dng:#ff7b6b}}
@@ -149,13 +151,23 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
 .about ul{margin:0;padding-inline-start:20px;line-height:1.9}
 .sig{text-align:center;color:var(--mut);font-size:14px;margin:18px 0 8px}
 .sig a{color:var(--pri);text-decoration:none;font-weight:700}
+.lg{display:inline-flex;align-items:center;gap:9px;direction:ltr;vertical-align:middle}
+.lg svg{width:38px;height:38px;flex:none;filter:drop-shadow(0 3px 6px rgba(15,118,110,.35))}
+.lgt{font-weight:800;font-size:25px;letter-spacing:1px;color:var(--tx);line-height:1}
+.lgt b{font-weight:900;letter-spacing:0;background:linear-gradient(90deg,#14b8a6,#84cc16);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.lg.xl{gap:12px}.lg.xl svg{width:92px;height:92px}.lg.xl .lgt{font-size:42px}
+.abt{text-align:center}
+.abt .lg{margin:10px 0 18px}
+.abt p{line-height:1.9;margin:0 0 16px}
+.abt .cr{border-top:1px solid var(--bd);padding-top:14px}
+.abt .cr b{display:block;font-size:19px;margin-top:4px;color:var(--pri)}
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <div id="home">
-  <div class="top"><h1><i data-i="pkg"></i> طلبيات المندوب</h1><div style="display:flex;gap:8px"><button class="sec" id="thBtn" onclick="toggleTheme()"></button><button class="sec" onclick="go('sMenu')"><i data-i="sliders"></i> الإعدادات</button></div></div>
+  <div class="top"><h1><span class="lg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="ha" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2dd4bf"/><stop offset=".55" stop-color="#0d9488"/><stop offset="1" stop-color="#115e59"/></linearGradient><linearGradient id="hb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fde047"/><stop offset="1" stop-color="#f59e0b"/></linearGradient><linearGradient id="hc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#14b8a6"/><stop offset="1" stop-color="#0f766e"/></linearGradient><clipPath id="hk"><rect width="512" height="512" rx="116"/></clipPath></defs><rect width="512" height="512" rx="116" fill="url(#ha)"/><path clip-path="url(#hk)" d="M0 0H512V190C390 140 190 190 0 110Z" fill="#fff" opacity=".1"/><rect x="132" y="108" width="248" height="320" rx="40" fill="#000" opacity=".2"/><rect x="132" y="96" width="248" height="320" rx="40" fill="#fff"/><rect x="170" y="144" width="120" height="24" rx="12" fill="#99f6e4"/><rect x="170" y="190" width="84" height="24" rx="12" fill="#ccfbf1"/><path d="M186 316l50 50 92-112" fill="none" stroke="url(#hc)" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/><circle cx="376" cy="132" r="60" fill="url(#hb)" stroke="#0d9488" stroke-width="10"/><path d="M388 98L350 140H372L362 168L402 122H380Z" fill="#fff"/></svg><span class="lgt"><b>ez</b>ORDER</span></span></h1><div style="display:flex;gap:8px"><button class="sec" id="thBtn" onclick="toggleTheme()"></button><button class="sec" onclick="go('sMenu')"><i data-i="sliders"></i> الإعدادات</button></div></div>
   <button class="pri big" onclick="newOrder()"><i data-i="plus"></i> إنشاء أوردر جديد</button>
   <div class="card">
     <div class="top"><b>الطلبيات المحفوظة</b><span class="mut" id="cnt"></span></div>
@@ -239,6 +251,14 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
   <div class="card about"><h3>الإعدادات</h3><ul><li>تنسيق الخط لكل جزء: الصيدلية، المذخر، العدد والترقيم، الملاحظة (عريض، مائل، يتوسطه خط، خط ثابت، عادي)</li><li>ترقيم المواد بأرقام عادية أو إيموجي أو رموز، مع إضافة رمز خاص من الكيبورد</li><li>اختيار إيموجي لكل حقل أو إخفاؤه، مع إضافة إيموجي من الكيبورد، وإظهار التاريخ أو إخفاؤه</li><li>إضافة الشركات وحذفها</li><li>إدارة الصيدليات والمواد المقترحة: إضافة وتعديل وحذف فردي أو جماعي، بحث، وعرض المزيد</li><li>استيراد الصيدليات والمواد من ملف Excel مع تنزيل نموذج جاهز</li><li>معاينة مباشرة لكل إعداد قبل اعتماده</li></ul></div>
   <div class="card about"><h3>عام</h3><ul><li>يعمل بدون إنترنت ومعه، وإنما الإنترنت للإرسال فقط</li><li>وضع نهاري وليلي</li><li>حركات ناعمة وأيقونات بسيطة</li><li>واجهة عربية كاملة تعمل على الهاتف والكمبيوتر بدون تثبيت</li></ul></div>
 </div>
+<div id="sAbt" class="hide">
+  <div class="top"><h1><i data-i="heart"></i> حول التطبيق</h1><button class="sec" onclick="go('home')">رجوع</button></div>
+  <div class="card abt">
+    <div class="lg xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="xa" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2dd4bf"/><stop offset=".55" stop-color="#0d9488"/><stop offset="1" stop-color="#115e59"/></linearGradient><linearGradient id="xb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fde047"/><stop offset="1" stop-color="#f59e0b"/></linearGradient><linearGradient id="xc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#14b8a6"/><stop offset="1" stop-color="#0f766e"/></linearGradient><clipPath id="xk"><rect width="512" height="512" rx="116"/></clipPath></defs><rect width="512" height="512" rx="116" fill="url(#xa)"/><path clip-path="url(#xk)" d="M0 0H512V190C390 140 190 190 0 110Z" fill="#fff" opacity=".1"/><rect x="132" y="108" width="248" height="320" rx="40" fill="#000" opacity=".2"/><rect x="132" y="96" width="248" height="320" rx="40" fill="#fff"/><rect x="170" y="144" width="120" height="24" rx="12" fill="#99f6e4"/><rect x="170" y="190" width="84" height="24" rx="12" fill="#ccfbf1"/><path d="M186 316l50 50 92-112" fill="none" stroke="url(#xc)" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/><circle cx="376" cy="132" r="60" fill="url(#xb)" stroke="#0d9488" stroke-width="10"/><path d="M388 98L350 140H372L362 168L402 122H380Z" fill="#fff"/></svg><span class="lgt"><b>ez</b>ORDER</span></div>
+    <p>التطبيق مجاني بالكامل، صُنع لمساعدة المندوب على إنجاز عمله بأسهل وأسرع وأدق طريقة ممكنة.</p>
+    <div class="cr"><span class="mut">الفكرة والتصميم</span><b>علي عبدالكريم</b></div>
+  </div>
+</div>
 <div id="sPh" class="hide">
   <div class="top"><h1>الصيدليات المقترحة</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
   <div class="card">
@@ -274,8 +294,8 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
   </div>
 </div>
 </div>
-<div class="sig" style="margin-bottom:0"><button class="sec" onclick="go('sAbout')"><i data-i="info"></i> ميزات التطبيق</button></div>
-<div class="sig">علي كريم : <a href="tel:07831698069" dir="ltr">07831698069</a></div>
+<div class="sig" style="margin-bottom:0"><button class="sec" onclick="go('sAbout')"><i data-i="info"></i> ميزات التطبيق</button> <button class="sec" onclick="go('sAbt')" style="margin-inline-start:6px"><i data-i="heart"></i> حول التطبيق</button></div>
+<div class="sig">علي كريم : <a href="https://wa.me/9647831698069" target="_blank" rel="noopener" dir="ltr">07831698069</a></div>
 <div id="dlg" class="hide"><div class="dbox"><div id="dmsg"></div><div class="acts"><button class="dng" id="dok">حذف نهائي</button><button class="sec" onclick="dclose()">إلغاء</button></div></div></div>
 <div id="pvBox" class="hide">
   <button class="ib" style="position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px" onclick="pvClose()"><i data-i="x"></i></button>
@@ -453,7 +473,8 @@ pill:'<path d="M10.5 20.5a4.95 4.95 0 0 1-7-7l10-10a4.95 4.95 0 0 1 7 7z"/><line
 chev:'<polyline points="15 18 9 12 15 6"/>',
 undo:'<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>',
 checksq:'<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
-eraser:'<path d="M20 20H8L3.5 15.5a1.4 1.4 0 0 1 0-2L13.5 3.5a1.4 1.4 0 0 1 2 0L20.5 8.5a1.4 1.4 0 0 1 0 2L11 20"/>'};
+eraser:'<path d="M20 20H8L3.5 15.5a1.4 1.4 0 0 1 0-2L13.5 3.5a1.4 1.4 0 0 1 2 0L20.5 8.5a1.4 1.4 0 0 1 0 2L11 20"/>',
+heart:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>'};
 function ic(n){return '<svg class="i" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ICO[n]+'</svg>'}
 function hydrate(root){(root||document).querySelectorAll('[data-i]').forEach(function(e){e.innerHTML=ic(e.getAttribute('data-i'))})}
 function g1(v){v=(v||'').trim();if(!v)return '';try{if(window.Intl&&Intl.Segmenter){var it=new Intl.Segmenter(undefined,{granularity:'grapheme'}).segment(v)[Symbol.iterator]().next();if(it.value)return it.value.segment}}catch(e){}return Array.from(v)[0]}
@@ -555,7 +576,7 @@ function setOpt(k,v){var s=getSt();s[k]=v;save('st',s);renderSet()}
 function setSty(k,v){var s=getSt();s.sty[k]=v;save('st',s);renderSet()}
 function setEm(k,v){var s=getSt();s.em[k]=v;save('st',s);renderSet()}
 function chip(t,on,fn,sty){var b=document.createElement('button');b.className='chip'+(on?' on':'');b.textContent=t;if(sty)b.style.cssText=sty;b.onclick=fn;return b}
-var PGS=['home','form','sMenu','sFont','sNum','sEmoji','sComp','sPh','sPr','sAbout'];
+var PGS=['home','form','sMenu','sFont','sNum','sEmoji','sComp','sPh','sPr','sAbout','sAbt'];
 function go(p){PGS.forEach(function(x){$(x).classList.toggle('hide',x!=p)});window.scrollTo(0,0);if(p=='home')renderList();if(p=='sPh'){SHOWN.ph=60;mgRender('ph')}if(p=='sPr'){SHOWN.pr=60;mgRender('pr')}}
 function sample(){return{pharm:'\u0635\u064a\u062f\u0644\u064a\u0629 \u0627\u0644\u0623\u0645\u0644',coop:'\u0641\u0644\u0627\u0646',dists:['\u0645\u0630\u062e\u0631 \u0627\u0644\u0646\u0648\u0631'],items:[{n:'Alvear Junior -Desma',q:'20',b:'30'},{n:'Capsolin Revulsivo -Desma',q:'10'}],note:'\u062a\u0648\u0635\u064a\u0644 \u0635\u0628\u0627\u062d\u0627\u064b',date:new Date().toISOString()}}
 function renderSet(){var s=getSt();$('cbEmoji').checked=s.emoji;$('cbDate').checked=s.date;
@@ -741,6 +762,12 @@ renderList();
 mkBarV('barV',function(c){if(!ED)return;if(ED.mode=='pen')ED.pc=c;else if(ED.target=='tc')ED.t.tc=c;else ED.t.bg=c;updSw();drawEd()});
 window.addEventListener('resize',function(){if(ED)drawEd()});
 (function(){var c=$('cv');c.addEventListener('pointerdown',edDown);c.addEventListener('pointermove',edMove);c.addEventListener('pointerup',function(){DRG=null});c.addEventListener('pointercancel',function(){DRG=null})})();
+/* أيقونة التطبيق للشاشة الرئيسية */
+(function(){try{var im=new Image();im.onload=function(){function png(n){var c=document.createElement('canvas');c.width=c.height=n;c.getContext('2d').drawImage(im,0,0,n,n);return c.toDataURL('image/png')}
+var a=document.createElement('link');a.rel='apple-touch-icon';a.href=png(180);document.head.appendChild(a);
+var m={name:'ezORDER',short_name:'ezORDER',start_url:location.href,theme_color:'#0f766e',background_color:'#0f766e',icons:[{src:png(192),sizes:'192x192',type:'image/png'},{src:png(512),sizes:'512x512',type:'image/png',purpose:'any'}]};
+var l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/manifest+json'}));document.head.appendChild(l)};
+im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><defs><linearGradient id=\"fa\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#2dd4bf\"/><stop offset=\".55\" stop-color=\"#0d9488\"/><stop offset=\"1\" stop-color=\"#115e59\"/></linearGradient><linearGradient id=\"fb\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#fde047\"/><stop offset=\"1\" stop-color=\"#f59e0b\"/></linearGradient><linearGradient id=\"fc\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#14b8a6\"/><stop offset=\"1\" stop-color=\"#0f766e\"/></linearGradient><clipPath id=\"fk\"><rect width=\"512\" height=\"512\" rx=\"116\"/></clipPath></defs><rect width=\"512\" height=\"512\" rx=\"116\" fill=\"url(#fa)\"/><path clip-path=\"url(#fk)\" d=\"M0 0H512V190C390 140 190 190 0 110Z\" fill=\"#fff\" opacity=\".1\"/><rect x=\"132\" y=\"108\" width=\"248\" height=\"320\" rx=\"40\" fill=\"#000\" opacity=\".2\"/><rect x=\"132\" y=\"96\" width=\"248\" height=\"320\" rx=\"40\" fill=\"#fff\"/><rect x=\"170\" y=\"144\" width=\"120\" height=\"24\" rx=\"12\" fill=\"#99f6e4\"/><rect x=\"170\" y=\"190\" width=\"84\" height=\"24\" rx=\"12\" fill=\"#ccfbf1\"/><path d=\"M186 316l50 50 92-112\" fill=\"none\" stroke=\"url(#fc)\" stroke-width=\"40\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"376\" cy=\"132\" r=\"60\" fill=\"url(#fb)\" stroke=\"#0d9488\" stroke-width=\"10\"/><path d=\"M388 98L350 140H372L362 168L402 122H380Z\" fill=\"#fff\"/></svg>")}catch(e){}})();
 </script>
 </body>
 </html>
