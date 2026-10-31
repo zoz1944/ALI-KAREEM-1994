@@ -183,6 +183,11 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
 .bub.pop{position:fixed;left:0;right:0;top:38%;margin:0 auto;width:max-content;max-width:min(300px,86vw);background:#4f46e5;color:#fff;text-align:center;padding:16px 18px;font-size:16px;cursor:default;box-shadow:0 10px 34px #0006;transform-origin:50% 50%;animation:popIn .32s cubic-bezier(.2,.9,.3,1.4)}
 .bub.pop::after{display:none}
 .bub.pop button{display:block;width:100%;margin-top:12px;background:#fff;color:#4f46e5;border:0;border-radius:12px;padding:10px;font-size:16px;font-weight:800;cursor:pointer}
+.bubk{position:fixed;inset:0;z-index:49;background:transparent}
+.bub .gt{display:block;width:100%;margin-top:10px;background:#fff;color:#0f766e;border:0;border-radius:12px;padding:9px;font:inherit;font-size:16px;font-weight:800;cursor:pointer}
+.bub .gt.big{font-size:28px;padding:14px}
+.bubr{position:absolute;z-index:48;border:3px solid #e11d48;border-radius:16px;pointer-events:none;animation:ringB .7s ease-in-out infinite}
+@keyframes ringB{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(225,29,72,.6)}50%{opacity:.3;box-shadow:0 0 0 9px rgba(225,29,72,0)}}
 @keyframes popIn{0%{opacity:0;transform:scale(.4)}60%{opacity:1;transform:scale(1.08)}100%{transform:scale(1)}}
 </style>
 </head>
@@ -397,27 +402,85 @@ var cur=null, imgData='';
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 function $(i){return document.getElementById(i)}
-var HT=null,H={on:false,p:0,d:0};
-function bubClose(){if(HT){clearTimeout(HT.t);HT.e.remove();HT=null}}
-function bubSet(b){HT={e:b,t:setTimeout(bubClose,7500)}}
-function hint(el,txt,up){if(!el)return;bubClose();var b=document.createElement('div');b.className='bub'+(up?' up':'');b.textContent=txt;
-  var W=document.documentElement.clientWidth,bw=Math.min(270,W-24);b.style.width=bw+'px';b.style.visibility='hidden';document.body.appendChild(b);
-  var r=el.getBoundingClientRect(),x=Math.max(12,Math.min(W-bw-12,r.left+r.width/2-bw/2));
-  var tu=r.top+window.scrollY-b.offsetHeight-14;if(up&&tu<8){up=false;b.classList.remove('up')}b.style.left=x+'px';b.style.top=(up?tu:r.bottom+window.scrollY+14)+'px';
-  b.style.setProperty('--ax',Math.max(18,Math.min(bw-18,r.left+r.width/2-x))+'px');b.style.visibility='';b.onclick=bubClose;bubSet(b)}
-function hintFix(txt,sub,fn){bubClose();var b=document.createElement('div');b.className='bub fix';b.textContent=txt;if(sub){var m=document.createElement('small');m.textContent=sub;b.appendChild(m)}
-  b.onclick=function(){bubClose();if(fn)fn()};document.body.appendChild(b);bubSet(b)}
+var HT=null,H={on:false,p:0,d:0},FC=null,TS='',TD=0;
+function bubClose(){FC=null;if(HT){clearTimeout(HT.t);HT.e.remove();if(HT.k)HT.k.remove();if(HT.r)HT.r.remove();HT=null}}
+function vr(l,t,w,h){return{closest:function(){return true},getBoundingClientRect:function(){return{left:l,top:t,width:w,height:h,right:l+w,bottom:t+h}}}}
+function tip(el,txt,o){o=o||{};bubClose();var k=document.createElement('div');k.className='bubk';document.body.appendChild(k);
+  var b=document.createElement('div'),up=!!o.up;b.className='bub'+(o.pop?' pop':'')+(o.fix?' fix':'');
+  var t=document.createElement('div');t.textContent=txt;if(o.big)t.style.fontSize='20px';b.appendChild(t);
+  if(o.sub){var m=document.createElement('small');m.textContent=o.sub;b.appendChild(m)}
+  var g=document.createElement('button');g.type='button';g.className='gt'+(o.big?' big':'');g.textContent='فهمت';
+  g.onclick=function(e){e.stopPropagation();var f=o.ok;bubClose();if(f)f()};b.appendChild(g);
+  var hd={e:b,k:k,t:0};
+  if(o.pop||o.fix||!el){document.body.appendChild(b);HT=hd;return}
+  var fx=!!(el.closest&&el.closest('#ed')),W=document.documentElement.clientWidth,bw=Math.min(270,W-24);
+  b.style.width=bw+'px';b.style.visibility='hidden';if(fx)b.style.position='fixed';document.body.appendChild(b);
+  var r=el.getBoundingClientRect(),sy=fx?0:window.scrollY,x=Math.max(12,Math.min(W-bw-12,r.left+r.width/2-bw/2)),bh=b.offsetHeight,tu=r.top+sy-bh-14,td=r.bottom+sy+14;
+  if(fx){if(up&&tu<8)up=false;else if(!up&&td+bh>window.innerHeight-8&&tu>=8)up=true}else if(up&&tu<8)up=false;
+  if(up)b.classList.add('up');b.style.left=x+'px';b.style.top=(up?tu:td)+'px';
+  b.style.setProperty('--ax',Math.max(18,Math.min(bw-18,r.left+r.width/2-x))+'px');b.style.visibility='';
+  if(o.ring){var q=document.createElement('div');q.className='bubr';q.style.left=(r.left+window.scrollX-5)+'px';q.style.top=(r.top+sy-5)+'px';q.style.width=(r.width+10)+'px';q.style.height=(r.height+10)+'px';document.body.appendChild(q);hd.r=q}
+  HT=hd;if(!fx)b.scrollIntoView({block:'nearest',behavior:'smooth'})}
+function hint(el,txt,up,fn){if(!el)return;tip(el,txt,{up:up,ok:fn})}
+function hintFix(txt,sub,fn){tip(null,txt,{fix:1,sub:sub,ok:fn})}
 function tipsOn(){return load('tips',true)!==false}
 function hPh(){if(!tipsOn()||!H.on||H.p||!$('pharm').value.trim())return;var d=document.querySelector('#dists .dn');if(!d||d.value.trim())return;H.p=1;setTimeout(function(){hint(d,'الآن اكتب اسم المذخر',true)},250)}
-function hDs(){if(!tipsOn()||!H.on||H.d)return;var d=document.querySelector('#dists .dn'),i=document.querySelector('#items .in');if(!d||!d.value.trim()||!i||i.value.trim())return;H.d=1;setTimeout(function(){hint(i,'ادخل المواد وبعدين اضغط علامة الصح',true)},250)}
+function hDs(){if(!tipsOn()||!H.on||H.d)return;var d=document.querySelector('#dists .dn'),i=document.querySelector('#items .in');if(!d||!d.value.trim()||!i||i.value.trim())return;H.d=1;var ab=$('dists').nextElementSibling;setTimeout(function(){tip(ab,'اضغط على إضافة مذخر',{up:1,ok:function(){TS='dist';force([ab])}})},250)}
 function itemsDone(){if(!tipsOn())return;if(!collect().items.length){toast('أدخل المواد أولاً');return}
-  var pen=document.querySelector('#thumbs .tb button:nth-child(2)'),el=pen||$('thumbs').previousElementSibling;
+  FC=null;TS='';var pen=document.querySelector('#thumbs .tb button:nth-child(2)'),el=pen||$('thumbs').previousElementSibling;
   el.scrollIntoView({behavior:'smooth',block:'center'});
-  setTimeout(function(){hint(el,pen?'اضغط على علامة القلم إذا تريد حتى تنسخ النص بالصورة':'أضف صورة الأوردر أولاً، ثم اضغط على علامة القلم حتى ينسخ النص بالصورة',true)},450)}
-function hImg(){if(!tipsOn()||!H.on||H.img||$('pharm').value.trim())return;H.img=1;window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){hint($('pharm'),'اختار الصيدلية',true)},500)}
-function hEd(){if(!tipsOn()||!H.on||H.ed)return;H.ed=1;setTimeout(function(){bubClose();var b=document.createElement('div');b.className='bub pop';
-  var t=document.createElement('div');t.textContent='تگدر تلغي الرسائل التوضيحية من الإعدادات';var k=document.createElement('button');k.type='button';k.textContent='فهمت';k.onclick=bubClose;
-  b.appendChild(t);b.appendChild(k);document.body.appendChild(b);HT={e:b,t:setTimeout(bubClose,20000)}},300)}
+  setTimeout(function(){if(pen)tip(pen,'اضغط على علامة القلم لتعديل النص داخل الأوردر',{up:1});else{H.wi=1;tip(el,'أضف صورة الأوردر أولاً، ثم اضغط على علامة القلم حتى ينسخ النص بالصورة',{up:1})}},450)}
+function hPen(){if(!tipsOn()||!H.on||!H.wi||HT)return;var pen=document.querySelector('#thumbs .tb button:nth-child(2)');if(!pen)return;H.wi=0;pen.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){tip(pen,'اضغط على علامة القلم لتعديل النص داخل الأوردر',{up:1})},450)}
+function hImg(){if(!tipsOn()||!H.on||H.img||$('pharm').value.trim())return;H.img=1;window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){tip($('pharm'),'اختار الصيدلية',{up:1,ok:function(){setTimeout(hPen,300)}})},500)}
+function hEd(){if(!tipsOn()||!H.on||H.ed)return;H.ed=1;setTimeout(function(){tip(null,'تگدر تلغي الرسائل التوضيحية من الإعدادات',{pop:1,ok:hWA})},300)}
+function hWA(){var w=document.querySelector('.acts .wa');if(!w||!H.on)return;w.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){if(H.on)tip(w,'جرب ترسلها واتساب',{up:1,ring:1})},500)}
+/* شرح إجباري: مذخر ← اسم المادة ← العدد ← البونص ← الصح */
+function force(a){a.push(document.querySelector('#form .top'));FC=a.filter(Boolean)}
+function fcBlock(e){if(!FC)return;var t=e.target;for(var i=0;i<FC.length;i++)if(FC[i].contains(t))return;if(e.cancelable)e.preventDefault();e.stopPropagation()}
+['click','mousedown','pointerdown','touchend'].forEach(function(ev){document.addEventListener(ev,fcBlock,{capture:true,passive:false})});
+function frow(){return document.querySelector('#items .row')}
+function hName(){if(!tipsOn()||!H.on)return;var r=frow();if(!r)return;var i=r.querySelector('.in');TS='';i.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){if(TS!=='')return;tip(i,'اكتب اسم المادة',{up:1,ok:function(){TS='name';force([r.querySelector('.rel'),r.querySelector('.iq')]);i.focus()}})},450)}
+function stQty(r){TS='qty';var q=r.querySelector('.iq');tip(q,'اكتب العدد',{up:1,ok:function(){force([q,r.querySelector('.ibn')]);q.focus()}})}
+function stBon(r){TS='bon';var b=r.querySelector('.ibn');tip(b,'اكتب البونص',{up:1,ok:function(){force([b,document.querySelector('.okc')]);b.focus()}})}
+function stChk(){TS='chk';var k=document.querySelector('.okc');if(!k)return;k.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){if(TS!=='chk')return;tip(k,'اضغط للمتابعة',{up:1,ok:function(){force([k])}})},450)}
+function hQty(e){var t=e.target;if(!tipsOn()||!H.on||!t.classList||!t.closest)return;var r=t.closest('.row');if(!r)return;var v=t.value.trim();
+  if(t.classList.contains('in')){
+    if(TS==='name'&&r===frow()&&v)stQty(r);
+    else if(TS===''&&!H.fb&&!H.d&&v&&r===frow()){H.fb=1;H.d=1;stQty(r)}}
+  else if(t.classList.contains('iq')){if(TS==='qty'&&v)stBon(r)}
+  else if(t.classList.contains('ibn')){if(TS==='bon'&&v)stChk()}}
+function hIn(e){var t=e.target;if(!tipsOn()||!H.on||!t.classList||!t.closest||!t.closest('.row'))return;
+  if((TS==='qty'&&t.classList.contains('iq'))||(TS==='bon'&&t.classList.contains('ibn'))){clearTimeout(TD);if(t.value.trim())TD=setTimeout(function(){hQty({target:t})},900)}}
+$('items').addEventListener('input',hIn);
+$('items').addEventListener('keydown',function(e){if(e.key==='Enter'&&FC&&e.target.blur)e.target.blur()});
+$('dists').nextElementSibling.addEventListener('click',function(){if(TS==='dist'){TS='';setTimeout(hName,350)}});
+/* شرح المحرر */
+function handleEl(){var c=$('cv'),b=TB&&TB[0];if(!b||b.hx==null)return null;var r=c.getBoundingClientRect(),sx=r.width/c.width,sy=r.height/c.height,d=b.R*2*sx;return vr(r.left+b.hx*sx-d/2,r.top+b.hy*sy-d/2,d,d)}
+function edTour(){if(!tipsOn()||!H.on||H.e)return;H.e=1;var tk=ED;
+  setTimeout(function(){if(ED!==tk)return;var h=handleEl();
+    function s2(){if(ED!==tk)return;tip($('tabP'),'هذا القلم للرسم فوق المادة الغير مرغوب فيها',{ok:s3})}
+    function s3(){if(ED!==tk)return;tip($('tabT'),'اضغط على علامة أء لتدخل إليها وتتعرف على كل تفاصيلها',{ok:function(){if(ED===tk)H.wt=1}})}
+    if(h)tip(h,'هذه العلامة في الزاوية اليسرى أسفل النص المنسوخ، اسحبها لتغيير حجم النص',{up:1,ok:s2});else s2()},500)}
+function edTxTour(){var tk=ED,i=0,S=[
+  ['tgDir','اتجاه النص: كل ضغطة تغيّر محاذاة النص (تلقائي، يمين، يسار)',0],
+  ['tgBgs','شكل الخلفية: مربع واحد للنص كله، أو خلفية ملاصقة لكل سطر',0],
+  ['tgTc','لون الكتابة: اضغط عليه ثم اختر اللون من شريط الألوان',0],
+  ['tgBg','لون خلفية النص: اضغط عليه ثم اختر اللون من شريط الألوان',0],
+  ['barV','شريط الألوان: اضغط عليه أو اسحب لاختيار اللون',0],
+  ['edText','هنا تعدّل النص الظاهر على الصورة',1],
+  ['spBtn','فصل النص إلى جزئين لتحريك كل جزء لوحده، وأزرار ▲ ▼ تحدد مكان الفصل',1],
+  ['edOp','شفافية الخلفية: اسحب المؤشر لتغيير وضوح خلفية النص',1],
+  ['edUse','إدراج النص داخل الصورة: ألغِ العلامة إذا لا تريد النص على الصورة',1],
+  ['edCap','إرسال وصف الطلبية أسفل الصورة أيضاً: فعّلها إذا تريد الوصف مع الصورة',1],
+  ['edRegen','إعادة كتابة النص من الطلبية: يرجع النص الأصلي ويلغي تعديلاتك عليه',1]];
+  function nx(){if(ED!==tk)return;if(i>=S.length)return fin();var s=S[i++],el=$(s[0]);
+    if(s[0]=='edUse'||s[0]=='edCap')el=el.parentNode;
+    if(s[0]=='barV'){var r=el.getBoundingClientRect();el=vr(r.left,r.top+r.height/2-10,r.width,20)}else el.scrollIntoView({block:'nearest'});
+    tip(el,s[1],{up:s[2],ok:nx})}
+  function fin(){tip(null,'هذه كل تفاصيل علامة أء',{pop:1,big:1,ok:function(){if(ED!==tk)return;setMode('view');setTimeout(crp,300)}})}
+  function crp(){if(ED!==tk)return;tip($('tabC'),'علامة تغيير حجم الصورة: اضغط عليها ثم اسحب زوايا الإطار أو حوافه لقص الصورة وتصغيرها',{ok:function(){setTimeout(chk,200)}})}
+  function chk(){if(ED!==tk)return;tip(document.querySelector('#bView .ib.ok'),'اضغط على علامة الصح لحفظ التعديلات',{up:1})}
+  setTimeout(nx,350)}
 function tipsUI(){var on=tipsOn();$('tipsTx').textContent=on?'إلغاء الشرح التوضيحي':'تفعيل الشرح التوضيحي';document.querySelectorAll('.okc').forEach(function(b){b.parentNode.style.display=on?'':'none'});if(!on)bubClose()}
 function tipsTg(){save('tips',!tipsOn());tipsUI();toast(tipsOn()?'تم تفعيل الشرح التوضيحي':'تم إلغاء الشرح التوضيحي')}
 function toast(t){var e=$('toast');e.textContent=t;e.style.display='block';setTimeout(function(){e.style.display='none'},2600)}
@@ -608,7 +671,7 @@ var IMGS=[],EI=0,PVI=-1;
 function mk(img,ov,im){var it={img:img,ov:ov||null,im:im||null};Object.defineProperty(it,'el',{value:null,writable:true,enumerable:false});var e=new Image();e.onload=function(){it.el=e;showImg()};e.src=img;return it}
 function pickImg(f){var files=[].slice.call(f.files);f.value='';files.forEach(function(file){var rd=new FileReader();rd.onload=function(){var im=new Image();im.onload=function(){
   var s=Math.min(1,1280/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);
-  IMGS.push(mk(c.toDataURL('image/jpeg',0.8)));showImg();hImg()};im.src=rd.result};rd.readAsDataURL(file)})}
+  IMGS.push(mk(c.toDataURL('image/jpeg',0.8)));showImg();hImg();setTimeout(hPen,900)};im.src=rd.result};rd.readAsDataURL(file)})}
 function showImg(){var ib=$('imgBtn');if(ib){ib.classList.toggle('calm',IMGS.length>0);$('imgBtnT').textContent=IMGS.length?'إضافة صورة أخرى':'اختيار صورة الأوردر'}var t=$('thumbs');t.innerHTML='';var o=collect();IMGS.forEach(function(it,i){
   var d=document.createElement('div');d.className='thumb';var im=document.createElement('img');im.src=(it.ov||it.im)&&it.el?composed(o,it):it.img;d.appendChild(im);
   var b=document.createElement('div');b.className='tb';
@@ -736,14 +799,14 @@ function openEd(){if(!baseImg){toast('انتظر لحظة ثم أعد المحا
   ED={mode:'text',use:!!OV||!IM,t:T,strokes:IM&&IM.strokes?JSON.parse(JSON.stringify(IM.strokes)):[],cr:IM&&IM.cr?{x:IM.cr.x,y:IM.cr.y,w:IM.cr.w,h:IM.cr.h}:{x:0,y:0,w:1,h:1},pen:'p',pc:'#ff0000',ps:1.6,target:'tc'};
   FL=document.createElement('canvas');FL.width=W0;FL.height=H0;LY=document.createElement('canvas');LY.width=W0;LY.height=H0;rebuildLY();
   $('edText').value=T.text;$('edUse').checked=ED.use;$('edCap').checked=T.cap!==false;$('edOp').value=T.op;$('penSize').value=ED.ps;
-  $('ed').classList.remove('hide');setMode('view');setTg('tc');setPen('p');syncSplit();syncDir()}
+  $('ed').classList.remove('hide');setMode('view');setTg('tc');setPen('p');syncSplit();syncDir();edTour()}
 function rebuildLY(){var x=LY.getContext('2d');x.clearRect(0,0,LY.width,LY.height);ED.strokes.forEach(function(st){strokeDraw(x,st,LY.width,LY.height)});refreshFL()}
 function refreshFL(){var x=FL.getContext('2d');x.clearRect(0,0,FL.width,FL.height);x.drawImage(baseImg,0,0);x.drawImage(LY,0,0)}
 function setMode(m){ED.mode=m;if(m=='text'&&!ED.use){ED.use=true;$('edUse').checked=true}
   if(m=='crop')ED.crPrev={x:ED.cr.x,y:ED.cr.y,w:ED.cr.w,h:ED.cr.h};
   var code={view:'v',pen:'p',text:'t',crop:'c'}[m];
   document.querySelectorAll('#ed [data-v]').forEach(function(e){e.style.display=e.getAttribute('data-v').split(',').indexOf(code)>=0?'':'none'});
-  $('tabP').classList.toggle('on',m=='pen');$('tabT').classList.toggle('on',m=='text');updSw();drawEd()}
+  $('tabP').classList.toggle('on',m=='pen');$('tabT').classList.toggle('on',m=='text');updSw();drawEd();if(m=='text'&&H.wt){H.wt=0;edTxTour()}}
 function cropNo(){ED.cr=ED.crPrev;setMode('view')}
 function setTg(t){ED.target=t;$('tgTc').classList.toggle('on',t=='tc');$('tgBg').classList.toggle('on',t=='bg');updSw()}
 function setPen(t,sz){ED.pen=t;if(sz){ED.ps=sz;$('penSize').value=sz}
@@ -772,7 +835,7 @@ function edRegen(){var g=text(collect(),false,true);ED.t.text=g;ED.t.gen=g;$('ed
 function edUndo(){ED.strokes.pop();rebuildLY();drawEd()}
 function edClr(){ED.strokes=[];rebuildLY();drawEd()}
 function edCrReset(){ED.cr={x:0,y:0,w:1,h:1};drawEd()}
-function closeEd(){$('ed').classList.add('hide');ED=null}
+function closeEd(){bubClose();H.wt=0;$('ed').classList.add('hide');ED=null}
 function applyEd(){var T=ED.t;T.cap=$('edCap').checked;OV=ED.use?T:null;var cr=ED.cr,full=cr.x<0.001&&cr.y<0.001&&cr.w>0.999&&cr.h>0.999;
   ED.strokes.forEach(function(st){st.pts=st.pts.map(function(q){return[Math.round(q[0]*1e4)/1e4,Math.round(q[1]*1e4)/1e4]})});
   IM=(ED.strokes.length||!full)?{cr:full?null:cr,strokes:ED.strokes}:null;IMGS[EI].ov=OV;IMGS[EI].im=IM;closeEd();showImg();toast('تم تطبيق التعديلات ✅');hEd()}
@@ -810,13 +873,13 @@ function renderComps(){var l=getComps(),cl=$('compList'),ab=$('addBtns');cl.inne
   if(!l.length)big('+ إضافة مادة',function(){addItem()});
   else l.forEach(function(c){big(c,function(){compItem(c)})})}
 function compItem(c){var rows=document.querySelectorAll('#items .row'),inp=rows[rows.length-1].querySelector('.in'),v=inp.value.trim();if(!v){toast('اكتب اسم المادة أولاً');return}if(v.toLowerCase().slice(-(c.length+2))!=(' -'+c).toLowerCase())inp.value=v+' -'+c;addItem();var n=document.querySelectorAll('#items .in');n[n.length-1].focus()}
-['change','picked'].forEach(function(ev){$('pharm').addEventListener(ev,hPh);$('dists').addEventListener(ev,function(e){if(e.target.classList.contains('dn'))hDs()})});
+['change','picked'].forEach(function(ev){$('items').addEventListener(ev,hQty);$('pharm').addEventListener(ev,hPh);$('dists').addEventListener(ev,function(e){if(e.target.classList.contains('dn'))hDs()})});
 function sendWA(){var o=collect();if(!valid(o))return;share(o,'wa');goHome()}
 function sendTG(){var o=collect();if(!valid(o))return;share(o,'tg');goHome()}
 
 /* الواجهة */
 function reset(){$('pharm').value='';$('coop').value='';$('note').value='';$('dists').innerHTML='';$('items').innerHTML='';clearImg()}
-function newOrder(){cur=null;reset();addDist();addItem();$('home').classList.add('hide');$('form').classList.remove('hide');window.scrollTo(0,0);H={on:true,p:0,d:0,img:0,ed:0};if(tipsOn())setTimeout(function(){hintFix('اختار صورة الأوردر وبعدين دخل التفاصيل');setTimeout(function(){if(H.on&&!H.img)$('imgBtn').scrollIntoView({behavior:'smooth',block:'center'})},1200)},500)}
+function newOrder(){cur=null;reset();addDist();addItem();$('home').classList.add('hide');$('form').classList.remove('hide');window.scrollTo(0,0);H={on:true,p:0,d:0,img:0,ed:0,q:0,b:0,c:0,wi:0,e:0,wt:0,fb:0};TS='';FC=null;clearTimeout(TD);tipsUI();if(tipsOn())setTimeout(function(){hintFix('اختار صورة الأوردر وبعدين دخل التفاصيل');setTimeout(function(){if(H.on&&!H.img)$('imgBtn').scrollIntoView({behavior:'smooth',block:'center'})},1200)},500)}
 function openOrder(id){H.on=false;bubClose();var o=load('orders',[]).filter(function(x){return x.id===id})[0];if(!o)return;
   cur=o;reset();$('pharm').value=o.pharm;$('coop').value=o.coop||'';$('note').value=o.note||'';
   (o.dists.length?o.dists:['']).forEach(addDist);o.items.forEach(function(i){addItem(i.n,i.q,i.b)});IMGS=(o.imgs||(o.img?[{img:o.img,ov:o.ov,im:o.im}]:[])).map(function(x){return mk(x.img,x.ov,x.im)});showImg();
