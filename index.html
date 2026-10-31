@@ -161,6 +161,22 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
 .abt p{line-height:1.9;margin:0 0 16px}
 .abt .cr{border-top:1px solid var(--bd);padding-top:14px}
 .abt .cr b{display:block;font-size:19px;margin-top:4px;color:var(--pri)}
+.dd{animation:ddn .2s}@keyframes ddn{from{opacity:0;transform:translateY(-6px)}}
+.emi{cursor:pointer}
+#emPk{position:fixed;inset:0;z-index:60;background:#0008;display:flex;align-items:flex-end;justify-content:center}
+#emPk .sh{background:var(--card);color:var(--tx);width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px));max-height:65vh;display:flex;flex-direction:column;gap:10px;animation:emUp .22s}
+@keyframes emUp{from{transform:translateY(40px);opacity:0}}
+.emtabs{display:flex;gap:6px;overflow-x:auto;flex:none}.emtabs .chip{white-space:nowrap;flex:none}
+.emgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;overflow-y:auto}
+.emgrid button{font-size:27px;background:none;border:0;padding:7px 0;border-radius:10px;cursor:pointer}.emgrid button:active{background:var(--bd)}
+.okc{width:46px;height:46px;border-radius:50%;background:#16a34a;color:#fff;border:0;display:flex;align-items:center;justify-content:center;padding:0}
+.bub{position:absolute;z-index:50;background:var(--pri);color:var(--pt);padding:11px 15px;border-radius:18px;font-size:15px;font-weight:700;line-height:1.6;box-shadow:0 6px 20px #0004;cursor:pointer;text-align:right;animation:bubIn .28s cubic-bezier(.2,.9,.3,1.3);transform-origin:var(--ax,50%) 0}
+.bub.up{transform-origin:var(--ax,50%) 100%}
+.bub::after{content:"";position:absolute;top:-8px;left:var(--ax,50%);margin-left:-8px;border-style:solid;border-width:0 8px 8px;border-color:transparent transparent var(--pri)}
+.bub.up::after{top:auto;bottom:-8px;border-width:8px 8px 0;border-color:var(--pri) transparent transparent}
+.bub.fix{position:fixed;left:0;right:0;margin:0 auto;width:max-content;max-width:min(300px,90vw);bottom:calc(24px + env(safe-area-inset-bottom,0px));transform-origin:50% 100%}
+.bub.fix::after{display:none}.bub small{display:block;font-weight:400;opacity:.85;font-size:12px}
+@keyframes bubIn{from{opacity:0;transform:scale(.6) translateY(8px)}}
 </style>
 </head>
 <body>
@@ -193,6 +209,7 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
     <label>المواد</label>
     <div id="items"></div>
     <div id="addBtns" class="chips"></div>
+    <div style="margin-top:10px"><button class="okc" onclick="itemsDone()" aria-label="تم إدخال المواد"><i data-i="check"></i></button></div>
   </div>
 
   <div class="card">
@@ -221,6 +238,7 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
   <button class="menu" onclick="go('sComp')"><i data-i="brief"></i> الشركات<i data-i="chev" class="chev"></i></button>
   <button class="menu" onclick="go('sPh')"><i data-i="cross"></i> الصيدليات المقترحة<i data-i="chev" class="chev"></i></button>
   <button class="menu" onclick="go('sPr')"><i data-i="pill"></i> المواد المقترحة<i data-i="chev" class="chev"></i></button>
+  <button class="menu" id="tipsBtn" onclick="tipsTg()"><i data-i="info"></i> <span id="tipsTx">إلغاء الشرح التوضيحي</span></button>
 </div>
 <div id="sFont" class="hide">
   <div class="top"><h1>تنسيق الخط</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
@@ -230,7 +248,7 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
 <div id="sNum" class="hide">
   <div class="top"><h1>ترقيم المواد</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
   <div class="card"><div id="numOpts" class="chips"></div>
-    <div class="mut" style="margin-top:8px">لإضافة رمز خاص: اضغط على خانة ＋ واكتبه من لوحة المفاتيح.</div></div>
+    <div class="mut" style="margin-top:8px">لإضافة رمز خاص: اضغط على ＋ واختر من القائمة.</div></div>
   <div class="mut" style="margin-bottom:6px">النموذج</div><div class="pv" id="pvN"></div>
 </div>
 <div id="sEmoji" class="hide">
@@ -239,7 +257,7 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
     <label class="opt"><input type="checkbox" id="cbEmoji" onchange="setOpt('emoji',this.checked)">إظهار الإيموجي</label>
     <label class="opt"><input type="checkbox" id="cbDate" onchange="setOpt('date',this.checked)">إظهار التاريخ</label>
     <div id="emOpts"></div>
-    <div class="mut" style="margin-top:6px">لإضافة إيموجي خاص: اضغط على خانة ＋ واكتبه من لوحة المفاتيح.</div>
+    <div class="mut" style="margin-top:6px">لإضافة إيموجي آخر: اضغط على ＋ واختر من القائمة.</div>
   </div>
   <div class="mut" style="margin-bottom:6px">النموذج</div><div class="pv" id="pvE"></div>
 </div>
@@ -262,7 +280,8 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
 <div id="sPh" class="hide">
   <div class="top"><h1>الصيدليات المقترحة</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
   <div class="card">
-    <div class="row"><input id="phNew" placeholder="اسم صيدلية جديدة"><button class="pri" onclick="mgAdd('ph')">إضافة</button></div>
+    <button class="pri" id="phTg" style="width:100%;margin-bottom:10px" onclick="tgAdd('ph')">＋ إضافة صيدلية ▾</button>
+    <div id="phAdd" class="hide dd" style="margin-bottom:10px"><div class="row"><input id="phNew" placeholder="اسم صيدلية جديدة"><button class="pri" onclick="mgAdd('ph')">إضافة</button></div></div>
     <div class="chips" style="margin:6px 0"><button class="sec" onclick="$('phFile').click()"><i data-i="dl"></i> استيراد من Excel</button><button class="sec" onclick="dlTemplate('ph')"><i data-i="file"></i> تنزيل نموذج</button></div>
     <input type="file" id="phFile" accept=".xlsx,.csv" style="display:none" onchange="mgImport('ph',this)">
     <div class="mut" style="margin-bottom:8px">العمود A: اسم الصيدلية. تُضاف الأسماء الجديدة فقط ولا يُحذف الموجود.</div>
@@ -275,8 +294,9 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
 <div id="sPr" class="hide">
   <div class="top"><h1>المواد المقترحة</h1><button class="sec" onclick="go('sMenu')">رجوع</button></div>
   <div class="card">
-    <div class="row"><input id="prNew" placeholder="اسم المادة"><input id="prCo" placeholder="الشركة" style="width:110px;flex:none"></div>
-    <button class="pri" style="width:100%;margin-bottom:10px" onclick="mgAdd('pr')">إضافة مادة</button>
+    <button class="pri" id="prTg" style="width:100%;margin-bottom:10px" onclick="tgAdd('pr')">＋ إضافة مادة ▾</button>
+    <div id="prAdd" class="hide dd" style="margin-bottom:10px"><div class="row"><input id="prNew" placeholder="اسم المادة"><input id="prCo" placeholder="الشركة" style="width:110px;flex:none"></div>
+    <button class="pri" style="width:100%;margin-top:8px" onclick="mgAdd('pr')">إضافة مادة</button></div>
     <div class="chips" style="margin:6px 0"><button class="sec" onclick="$('prFile').click()"><i data-i="dl"></i> استيراد من Excel</button><button class="sec" onclick="dlTemplate('pr')"><i data-i="file"></i> تنزيل نموذج</button></div>
     <input type="file" id="prFile" accept=".xlsx,.csv" style="display:none" onchange="mgImport('pr',this)">
     <div class="mut" style="margin-bottom:8px">العمود A: اسم المادة، العمود B: الشركة. تُضاف الأسماء الجديدة فقط ولا يُحذف الموجود.</div>
@@ -309,7 +329,8 @@ h1 [data-i]{color:var(--pri);margin-inline-end:6px}h1 svg.i{width:26px;height:26
       <button class="ib" id="tabP" data-v="v,p" onclick="setMode('pen')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
       <button class="ib" id="tabT" data-v="v,t" onclick="setMode('text')"><b style="font-size:19px">أء</b></button>
       <button class="ib" id="tabC" data-v="v" onclick="setMode('crop')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg></button>
-      <button class="ib" data-v="v" onclick="pvEd()"><i data-i="eye"></i></button>
+      <button class="ib" id="tgDir" data-v="t" onclick="edDirNext()" aria-label="اتجاه النص"></button>
+      <button class="ib" id="tgBgs" data-v="t" onclick="edBgsTg()" aria-label="شكل الخلفية"><b style="font-size:15px;border:2px solid #fff;border-radius:7px;padding:0 6px;line-height:20px">A</b></button>
       <button class="ib" data-v="p" onclick="edUndo()" ><i data-i="undo"></i></button>
     </div>
     <div class="tr">
@@ -368,6 +389,27 @@ var cur=null, imgData='';
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 function $(i){return document.getElementById(i)}
+var HT=null,H={on:false,p:0,d:0};
+function bubClose(){if(HT){clearTimeout(HT.t);HT.e.remove();HT=null}}
+function bubSet(b){HT={e:b,t:setTimeout(bubClose,7500)}}
+function hint(el,txt,up){if(!el)return;bubClose();var b=document.createElement('div');b.className='bub'+(up?' up':'');b.textContent=txt;
+  var W=document.documentElement.clientWidth,bw=Math.min(270,W-24);b.style.width=bw+'px';b.style.visibility='hidden';document.body.appendChild(b);
+  var r=el.getBoundingClientRect(),x=Math.max(12,Math.min(W-bw-12,r.left+r.width/2-bw/2));
+  var tu=r.top+window.scrollY-b.offsetHeight-14;if(up&&tu<8){up=false;b.classList.remove('up')}b.style.left=x+'px';b.style.top=(up?tu:r.bottom+window.scrollY+14)+'px';
+  b.style.setProperty('--ax',Math.max(18,Math.min(bw-18,r.left+r.width/2-x))+'px');b.style.visibility='';b.onclick=bubClose;bubSet(b)}
+function hintFix(txt,sub,fn){bubClose();var b=document.createElement('div');b.className='bub fix';b.textContent=txt;if(sub){var m=document.createElement('small');m.textContent=sub;b.appendChild(m)}
+  b.onclick=function(){bubClose();if(fn)fn()};document.body.appendChild(b);bubSet(b)}
+function tipsOn(){return load('tips',true)!==false}
+function hPh(){if(!tipsOn()||!H.on||H.p||!$('pharm').value.trim())return;var d=document.querySelector('#dists .dn');if(!d||d.value.trim())return;H.p=1;setTimeout(function(){hint(d,'الآن اكتب اسم المذخر',true)},250)}
+function hDs(){if(!tipsOn()||!H.on||H.d)return;var d=document.querySelector('#dists .dn'),i=document.querySelector('#items .in');if(!d||!d.value.trim()||!i||i.value.trim())return;H.d=1;setTimeout(function(){hint(i,'ادخل المواد وبعدين اضغط علامة الصح',true)},250)}
+function itemsDone(){if(!tipsOn())return;if(!collect().items.length){toast('أدخل المواد أولاً');return}
+  var pen=document.querySelector('#thumbs .tb button:nth-child(2)'),el=pen||$('thumbs').previousElementSibling;
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(function(){hint(el,pen?'اضغط على علامة القلم إذا تريد حتى تنسخ النص بالصورة':'أضف صورة الأوردر أولاً، ثم اضغط على علامة القلم حتى ينسخ النص بالصورة',true)},450)}
+function hImg(){if(!tipsOn()||!H.on||H.img||$('pharm').value.trim())return;H.img=1;window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){hint($('pharm'),'اختار الصيدلية',true)},500)}
+function hEd(){if(!tipsOn()||!H.on||H.ed)return;H.ed=1;setTimeout(function(){hintFix('تگدر تلغي الرسائل التوضيحية من الإعدادات')},2900)}
+function tipsUI(){var on=tipsOn();$('tipsTx').textContent=on?'إلغاء الشرح التوضيحي':'تفعيل الشرح التوضيحي';document.querySelectorAll('.okc').forEach(function(b){b.parentNode.style.display=on?'':'none'});if(!on)bubClose()}
+function tipsTg(){save('tips',!tipsOn());tipsUI();toast(tipsOn()?'تم تفعيل الشرح التوضيحي':'تم إلغاء الشرح التوضيحي')}
 function toast(t){var e=$('toast');e.textContent=t;e.style.display='block';setTimeout(function(){e.style.display='none'},2600)}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 
@@ -478,7 +520,18 @@ heart:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 
 function ic(n){return '<svg class="i" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ICO[n]+'</svg>'}
 function hydrate(root){(root||document).querySelectorAll('[data-i]').forEach(function(e){e.innerHTML=ic(e.getAttribute('data-i'))})}
 function g1(v){v=(v||'').trim();if(!v)return '';try{if(window.Intl&&Intl.Segmenter){var it=new Intl.Segmenter(undefined,{granularity:'grapheme'}).segment(v)[Symbol.iterator]().next();if(it.value)return it.value.segment}}catch(e){}return Array.from(v)[0]}
-function emInput(cb){var i=document.createElement('input');i.className='emi';i.placeholder='＋';i.setAttribute('inputmode','text');i.oninput=function(){var v=g1(i.value);if(v)cb(v)};return i}
+var EMJ=[['وجوه','😀 😃 😄 😁 😆 😅 😂 🤣 😊 😇 🙂 😉 😍 🥰 😘 😎 🤩 🥳 😏 🤔 😐 😴 😢 😭 😡 😱 🙏 👍 👎 👌 ✌️ 🤝 👏 💪 👋 👉 👈 👆 👇 ❤️ 🧡 💛 💚 💙 💜 🖤 💔'],
+['طبي','🏥 💊 💉 🩺 🩹 🧪 🧬 🌡️ ⚕️ 🩸 😷 🦷 🧴 🧼 🪥 🚑 ➕ ✚ 🔬 🧫'],
+['أماكن','🏢 🏬 🏪 🏭 🏠 🏦 🚚 🚛 🚐 🚗 🏍️ 📍 📌 🗺️ 🧭 ✈️ 🛒 🛍️'],
+['أغراض','📦 📋 📝 📄 📑 📎 🗂️ 📁 📅 🗓️ 🕒 ⏰ ⏳ ✏️ 🖊️ 📞 📱 💬 📢 🔔 🔑 💰 💵 🧾 🏷️ 🎁 🔗 ✍️ 👥 👤 🧑‍⚕️'],
+['طعام','🍎 🍌 🍇 🍉 🍊 🍋 🍓 🥕 🍞 🍕 🍔 🍗 🥤 ☕ 🍵 🍫 🍬 🍰 💧'],
+['رموز','✅ ☑️ ❌ ⚠️ ❗ ❓ ⭐ 🌟 ✨ 🔥 💥 🔹 🔸 🔷 🔶 🔴 🟢 🔵 🟡 ⚪ ⚫ ▪️ ▫️ ◾ • ➡️ ⬅️ ⬆️ ⬇️ 🔝 🆗 🆕 🆓 ♻️ 💯 ➖ ✔️']];
+function emPick(cb){var o=document.createElement('div');o.id='emPk';var sh=document.createElement('div');sh.className='sh';
+  var tb=document.createElement('div');tb.className='emtabs';var gr=document.createElement('div');gr.className='emgrid';
+  function show(i){[].forEach.call(tb.children,function(b,k){b.classList.toggle('on',k==i)});gr.innerHTML='';gr.scrollTop=0;EMJ[i][1].split(' ').forEach(function(e){var b=document.createElement('button');b.type='button';b.textContent=e;b.onclick=function(){o.remove();cb(e)};gr.appendChild(b)})}
+  EMJ.forEach(function(c,i){var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=c[0];b.onclick=function(){show(i)};tb.appendChild(b)});
+  sh.appendChild(tb);sh.appendChild(gr);o.appendChild(sh);o.onclick=function(e){if(e.target==o)o.remove()};document.body.appendChild(o);show(0)}
+function emInput(cb){var b=document.createElement('button');b.type='button';b.className='chip emi';b.textContent='＋';b.setAttribute('aria-label','إضافة إيموجي');b.onclick=function(){emPick(cb)};return b}
 var MODE={ph:false,pr:false},SEL={ph:{},pr:{}};
 function mgBar(k,idx){var b=$(k+'Bar');b.innerHTML='';
   function bt(t,c,fn){var e=document.createElement('button');e.className=c;e.innerHTML=t;e.style.padding='9px 12px';e.onclick=fn;b.appendChild(e)}
@@ -502,8 +555,10 @@ function mgEdit(k,i,r){var L=mgData(k),x=L[i],a=document.createElement('input'),
   r.appendChild(mgBtn('check',function(){var v=a.value.trim();if(!v)return;L[i]=k=='ph'?v:[v,b.value.trim()];mgSave(k);mgRender(k);toast('تم الحفظ ✅')},'var(--pri)'));
   r.appendChild(mgBtn('x',function(){mgRender(k)}))}
 function mgAdd(k){var v=$(k+'New').value.trim();if(!v)return;if(k=='ph')PHL.unshift(v);else PRL.unshift([v,$('prCo').value.trim()]);$(k+'New').value='';if(k=='pr')$('prCo').value='';mgSave(k);$(k+'Q').value='';mgRender(k);toast('تمت الإضافة ✅')}
+function adSet(k,o){$(k+'Add').classList.toggle('hide',!o);$(k+'Tg').textContent=(k=='ph'?'＋ إضافة صيدلية ':'＋ إضافة مادة ')+(o?'▴':'▾')}
+function tgAdd(k){var o=$(k+'Add').classList.contains('hide');adSet(k,o);if(o)$(k+'New').focus()}
 function isDark(){var t=document.documentElement.getAttribute('data-theme');if(t)return t=='dark';return !!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)}
-function applyTheme(){var t=load('theme',null);if(t)document.documentElement.setAttribute('data-theme',t);else document.documentElement.removeAttribute('data-theme');$('thBtn').innerHTML=ic(isDark()?'sun':'moon')}
+function applyTheme(){var t=load('theme','light');if(t)document.documentElement.setAttribute('data-theme',t);else document.documentElement.removeAttribute('data-theme');$('thBtn').innerHTML=ic(isDark()?'sun':'moon')}
 function toggleTheme(){save('theme',isDark()?'light':'dark');applyTheme()}
 function suggest(inp,src,min){
   var box=document.createElement('div');box.className='sug';box.style.display='none';
@@ -514,11 +569,11 @@ function suggest(inp,src,min){
     var m=rank(src(),q);
     if(!m.length){box.style.display='none';return}
     m.forEach(function(it){var s=it.c?it.t+' -'+it.c:it.t;var d=document.createElement('div');d.textContent=it.t;if(it.c){var sp=document.createElement('span');sp.className='mut';sp.textContent=' \u2014 '+it.c;d.appendChild(sp)}
-      d.addEventListener('mousedown',function(e){e.preventDefault();inp.value=s;box.style.display='none'});
+      d.addEventListener('mousedown',function(e){e.preventDefault();inp.value=s;box.style.display='none';inp.dispatchEvent(new Event('picked',{bubbles:true}))});
       var tp=null,mv=false;
       d.addEventListener('touchstart',function(e){var t=e.touches[0];tp=[t.clientX,t.clientY];mv=false},{passive:true});
       d.addEventListener('touchmove',function(e){if(!tp)return;var t=e.touches[0];if(Math.abs(t.clientX-tp[0])>8||Math.abs(t.clientY-tp[1])>8)mv=true},{passive:true});
-      d.addEventListener('touchend',function(e){if(!mv&&tp&&e.cancelable){e.preventDefault();inp.value=s;box.style.display='none'}tp=null});
+      d.addEventListener('touchend',function(e){if(!mv&&tp&&e.cancelable){e.preventDefault();inp.value=s;box.style.display='none';inp.dispatchEvent(new Event('picked',{bubbles:true}))}tp=null});
       box.appendChild(d)});
     box.style.display='block';
   });
@@ -543,7 +598,7 @@ var IMGS=[],EI=0,PVI=-1;
 function mk(img,ov,im){var it={img:img,ov:ov||null,im:im||null};Object.defineProperty(it,'el',{value:null,writable:true,enumerable:false});var e=new Image();e.onload=function(){it.el=e;showImg()};e.src=img;return it}
 function pickImg(f){var files=[].slice.call(f.files);f.value='';files.forEach(function(file){var rd=new FileReader();rd.onload=function(){var im=new Image();im.onload=function(){
   var s=Math.min(1,1280/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);
-  IMGS.push(mk(c.toDataURL('image/jpeg',0.8)));showImg()};im.src=rd.result};rd.readAsDataURL(file)})}
+  IMGS.push(mk(c.toDataURL('image/jpeg',0.8)));showImg();hImg()};im.src=rd.result};rd.readAsDataURL(file)})}
 function showImg(){var t=$('thumbs');t.innerHTML='';var o=collect();IMGS.forEach(function(it,i){
   var d=document.createElement('div');d.className='thumb';var im=document.createElement('img');im.src=(it.ov||it.im)&&it.el?composed(o,it):it.img;d.appendChild(im);
   var b=document.createElement('div');b.className='tb';
@@ -577,7 +632,7 @@ function setSty(k,v){var s=getSt();s.sty[k]=v;save('st',s);renderSet()}
 function setEm(k,v){var s=getSt();s.em[k]=v;save('st',s);renderSet()}
 function chip(t,on,fn,sty){var b=document.createElement('button');b.className='chip'+(on?' on':'');b.textContent=t;if(sty)b.style.cssText=sty;b.onclick=fn;return b}
 var PGS=['home','form','sMenu','sFont','sNum','sEmoji','sComp','sPh','sPr','sAbout','sAbt'];
-function go(p){PGS.forEach(function(x){$(x).classList.toggle('hide',x!=p)});window.scrollTo(0,0);if(p=='home')renderList();if(p=='sPh'){SHOWN.ph=60;mgRender('ph')}if(p=='sPr'){SHOWN.pr=60;mgRender('pr')}}
+function go(p){PGS.forEach(function(x){$(x).classList.toggle('hide',x!=p)});window.scrollTo(0,0);if(p=='home')renderList();if(p=='sPh'){SHOWN.ph=60;adSet('ph',false);mgRender('ph')}if(p=='sPr'){SHOWN.pr=60;adSet('pr',false);mgRender('pr')}}
 function sample(){return{pharm:'\u0635\u064a\u062f\u0644\u064a\u0629 \u0627\u0644\u0623\u0645\u0644',coop:'\u0641\u0644\u0627\u0646',dists:['\u0645\u0630\u062e\u0631 \u0627\u0644\u0646\u0648\u0631'],items:[{n:'Alvear Junior -Desma',q:'20',b:'30'},{n:'Capsolin Revulsivo -Desma',q:'10'}],note:'\u062a\u0648\u0635\u064a\u0644 \u0635\u0628\u0627\u062d\u0627\u064b',date:new Date().toISOString()}}
 function renderSet(){var s=getSt();$('cbEmoji').checked=s.emoji;$('cbDate').checked=s.date;
   var fo=$('fontOpts');fo.innerHTML='';
@@ -635,8 +690,11 @@ function drawBox(c,W,H,txt,X,Y,S,T,edit){
   var lh=fs*1.35,bw=0;lines.forEach(function(l){bw=Math.max(bw,c.measureText(l).width)});
   var pad=fs*0.6,BW=bw+pad*2,BH=lines.length*lh+pad*2;
   var bx=Math.max(0,Math.min(W-BW,X*W-BW/2)),by=Math.max(0,Math.min(H-BH,Y*H-BH/2));
-  c.globalAlpha=T.op==null?0.85:T.op;c.fillStyle=T.bg||'#ffffff';rrect(c,bx,by,BW,BH,fs*0.5);c.fill();c.globalAlpha=1;
-  c.fillStyle=T.tc||'#111111';lines.forEach(function(l,i){c.direction=dirOf(l);c.fillText(l,bx+BW-pad,by+pad+i*lh)});
+  c.globalAlpha=T.op==null?0.85:T.op;c.fillStyle=T.bg||'#ffffff';
+  if(T.bgs=='fit'){var n=lines.length,R=fs*0.5;c.beginPath();lines.forEach(function(l,i){if(!l.trim())return;var w=c.measureText(l).width+pad*2,x=T.dir=='ltr'?bx:bx+BW-w,y=by+pad*0.6+i*lh,h=lh+pad*0.8,r=Math.min(R,w/2,h/2);c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()});c.fill()}
+  else{rrect(c,bx,by,BW,BH,fs*0.5);c.fill()}
+  c.globalAlpha=1;
+  c.fillStyle=T.tc||'#111111';var D=T.dir||'auto';lines.forEach(function(l,i){var d=D=='auto'?dirOf(l):D,lt=D=='ltr';c.direction=d;c.textAlign=lt?'left':'right';c.fillText(l,lt?bx+pad:bx+BW-pad,by+pad+i*lh)});
   var box={x:bx,y:by,w:BW,h:BH};
   if(edit){var k=kf(c.canvas),R=17*k,hx=Math.max(R,Math.min(W-R,bx)),hy=Math.max(R,Math.min(H-R,by+BH));
     c.setLineDash([7*k,5*k]);c.lineWidth=2*k;c.strokeStyle='#0f766e';rrect(c,bx,by,BW,BH,fs*0.5);c.stroke();c.setLineDash([]);
@@ -661,14 +719,14 @@ function mkBarV(id,cb){var c=$(id),x=c.getContext('2d'),dn=false;c.width=40;c.he
   function pk(e){var r=c.getBoundingClientRect();cb(colAt(Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))))}
   c.addEventListener('pointerdown',function(e){dn=true;c.setPointerCapture(e.pointerId);pk(e)});c.addEventListener('pointermove',function(e){if(dn)pk(e)});c.addEventListener('pointerup',function(){dn=false})}
 function updSw(){if(!ED)return;$('swTc').style.background=ED.t.tc||'#111111';$('swBg').style.background=ED.t.bg||'#ffffff';$('swP').style.background=ED.pc}
-function openEd(){if(!baseImg){toast('انتظر لحظة ثم أعد المحاولة');return}
+function openEd(){if(!baseImg){toast('انتظر لحظة ثم أعد المحاولة');return}bubClose();
   var g=text(collect(),false,true),W0=baseImg.naturalWidth,H0=baseImg.naturalHeight;
   var T=OV?JSON.parse(JSON.stringify(OV)):{text:g,gen:g,size:3.4,x:.5,y:.5,cap:true,tc:'#111111',bg:'#ffffff',op:.85};
   if(T.text===T.gen){T.text=g;T.gen=g}if(!T.tc)T.tc='#111111';if(!T.bg)T.bg='#ffffff';if(T.op==null)T.op=.85;
   ED={mode:'text',use:!!OV||!IM,t:T,strokes:IM&&IM.strokes?JSON.parse(JSON.stringify(IM.strokes)):[],cr:IM&&IM.cr?{x:IM.cr.x,y:IM.cr.y,w:IM.cr.w,h:IM.cr.h}:{x:0,y:0,w:1,h:1},pen:'p',pc:'#ff0000',ps:1.6,target:'tc'};
   FL=document.createElement('canvas');FL.width=W0;FL.height=H0;LY=document.createElement('canvas');LY.width=W0;LY.height=H0;rebuildLY();
   $('edText').value=T.text;$('edUse').checked=ED.use;$('edCap').checked=T.cap!==false;$('edOp').value=T.op;$('penSize').value=ED.ps;
-  $('ed').classList.remove('hide');setMode('view');setTg('tc');setPen('p');syncSplit()}
+  $('ed').classList.remove('hide');setMode('view');setTg('tc');setPen('p');syncSplit();syncDir()}
 function rebuildLY(){var x=LY.getContext('2d');x.clearRect(0,0,LY.width,LY.height);ED.strokes.forEach(function(st){strokeDraw(x,st,LY.width,LY.height)});refreshFL()}
 function refreshFL(){var x=FL.getContext('2d');x.clearRect(0,0,FL.width,FL.height);x.drawImage(baseImg,0,0);x.drawImage(LY,0,0)}
 function setMode(m){ED.mode=m;if(m=='text'&&!ED.use){ED.use=true;$('edUse').checked=true}
@@ -691,6 +749,10 @@ function drawEd(){if(!ED||!baseImg)return;var c=$('cv'),W0=FL.width,H0=FL.height
     [[x1,y1,1,1],[x2,y1,-1,1],[x1,y2,1,-1],[x2,y2,-1,-1]].forEach(function(q){x.moveTo(q[0]+q[2]*L,q[1]);x.lineTo(q[0],q[1]);x.lineTo(q[0],q[1]+q[3]*L)});
     x.moveTo(mx-L/2,y1);x.lineTo(mx+L/2,y1);x.moveTo(mx-L/2,y2);x.lineTo(mx+L/2,y2);x.moveTo(x1,my-L/2);x.lineTo(x1,my+L/2);x.moveTo(x2,my-L/2);x.lineTo(x2,my+L/2);x.stroke()}
   else{var sw=Math.round(r.w*W0),sh=Math.round(r.h*H0);c.width=sw;c.height=sh;fitCv();x=c.getContext('2d');x.drawImage(FL,r.x*W0,r.y*H0,sw,sh,0,0,sw,sh);if(ED.use)TB=drawOv(x,sw,sh,ED.t,ED.mode!='pen')}}
+var DIRP={auto:'<path d="M21 6H3M17 12H7M19 18H5"/>',rtl:'<path d="M21 6H3M21 12H9M21 18H5"/>',ltr:'<path d="M3 6h18M3 12h12M3 18h16"/>'};
+function syncDir(){var d=ED.t.dir||'auto';$('tgDir').innerHTML='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+DIRP[d]+'</svg>';$('tgBgs').classList.toggle('on',ED.t.bgs=='fit')}
+function edDirNext(){var o=['auto','rtl','ltr'],d=ED.t.dir||'auto';ED.t.dir=o[(o.indexOf(d)+1)%3];syncDir();drawEd()}
+function edBgsTg(){ED.t.bgs=ED.t.bgs=='fit'?'box':'fit';syncDir();drawEd()}
 function edChg(){ED.t.text=$('edText').value;ED.t.op=parseFloat($('edOp').value);drawEd()}
 function syncSplit(){var T=ED.t;$('spBtn').innerHTML=T.split?ic('undo')+' دمج النص في مربع واحد':ic('scissors')+' فصل النص إلى جزئين';$('spCtl').style.display=T.split?'flex':'none'}
 function edSplit(){var T=ED.t;if(!T.split){var n=T.text.split('\n').length;T.split=true;T.cut=Math.max(1,Math.ceil(n/2));T.x2=T.x;T.y2=0.75;T.y=0.25;T.size2=T.size;ED.use=true;$('edUse').checked=true}else T.split=false;syncSplit();drawEd()}
@@ -703,7 +765,7 @@ function edCrReset(){ED.cr={x:0,y:0,w:1,h:1};drawEd()}
 function closeEd(){$('ed').classList.add('hide');ED=null}
 function applyEd(){var T=ED.t;T.cap=$('edCap').checked;OV=ED.use?T:null;var cr=ED.cr,full=cr.x<0.001&&cr.y<0.001&&cr.w>0.999&&cr.h>0.999;
   ED.strokes.forEach(function(st){st.pts=st.pts.map(function(q){return[Math.round(q[0]*1e4)/1e4,Math.round(q[1]*1e4)/1e4]})});
-  IM=(ED.strokes.length||!full)?{cr:full?null:cr,strokes:ED.strokes}:null;IMGS[EI].ov=OV;IMGS[EI].im=IM;closeEd();showImg();toast('تم تطبيق التعديلات ✅')}
+  IM=(ED.strokes.length||!full)?{cr:full?null:cr,strokes:ED.strokes}:null;IMGS[EI].ov=OV;IMGS[EI].im=IM;closeEd();showImg();toast('تم تطبيق التعديلات ✅');hEd()}
 function removeOv(){IMGS[EI].ov=null;IMGS[EI].im=null;OV=null;IM=null;closeEd();showImg()}
 function edPoint(e){var c=$('cv'),r=c.getBoundingClientRect();return[(e.clientX-r.left)*c.width/r.width,(e.clientY-r.top)*c.height/r.height]}
 function edDown(e){if(!ED)return;var c=$('cv'),p=edPoint(e),k=kf(c),m=ED.mode,W0=FL.width,H0=FL.height;
@@ -738,24 +800,26 @@ function renderComps(){var l=getComps(),cl=$('compList'),ab=$('addBtns');cl.inne
   if(!l.length)big('+ إضافة مادة',function(){addItem()});
   else l.forEach(function(c){big(c,function(){compItem(c)})})}
 function compItem(c){var rows=document.querySelectorAll('#items .row'),inp=rows[rows.length-1].querySelector('.in'),v=inp.value.trim();if(!v){toast('اكتب اسم المادة أولاً');return}if(v.toLowerCase().slice(-(c.length+2))!=(' -'+c).toLowerCase())inp.value=v+' -'+c;addItem();var n=document.querySelectorAll('#items .in');n[n.length-1].focus()}
+['change','picked'].forEach(function(ev){$('pharm').addEventListener(ev,hPh);$('dists').addEventListener(ev,function(e){if(e.target.classList.contains('dn'))hDs()})});
 function sendWA(){var o=collect();if(!valid(o))return;share(o,'wa');goHome()}
 function sendTG(){var o=collect();if(!valid(o))return;share(o,'tg');goHome()}
 
 /* الواجهة */
 function reset(){$('pharm').value='';$('coop').value='';$('note').value='';$('dists').innerHTML='';$('items').innerHTML='';clearImg()}
-function newOrder(){cur=null;reset();addDist();addItem();$('home').classList.add('hide');$('form').classList.remove('hide');window.scrollTo(0,0)}
-function openOrder(id){var o=load('orders',[]).filter(function(x){return x.id===id})[0];if(!o)return;
+function newOrder(){cur=null;reset();addDist();addItem();$('home').classList.add('hide');$('form').classList.remove('hide');window.scrollTo(0,0);H={on:true,p:0,d:0,img:0,ed:0};if(tipsOn())setTimeout(function(){hintFix('اختار صورة الأوردر وبعدين دخل التفاصيل','اضغط هنا للانتقال إلى الصور',function(){$('thumbs').scrollIntoView({behavior:'smooth',block:'center'})})},500)}
+function openOrder(id){H.on=false;bubClose();var o=load('orders',[]).filter(function(x){return x.id===id})[0];if(!o)return;
   cur=o;reset();$('pharm').value=o.pharm;$('coop').value=o.coop||'';$('note').value=o.note||'';
   (o.dists.length?o.dists:['']).forEach(addDist);o.items.forEach(function(i){addItem(i.n,i.q,i.b)});IMGS=(o.imgs||(o.img?[{img:o.img,ov:o.ov,im:o.im}]:[])).map(function(x){return mk(x.img,x.ov,x.im)});showImg();
   $('home').classList.add('hide');$('form').classList.remove('hide');window.scrollTo(0,0)}
 function delOrder(id){ask('حذف هذه الطلبية نهائياً؟',function(){save('orders',load('orders',[]).filter(function(x){return x.id!==id}));renderList()})}
-function goHome(){$('form').classList.add('hide');$('home').classList.remove('hide');renderList()}
+function goHome(){bubClose();H.on=false;$('form').classList.add('hide');$('home').classList.remove('hide');renderList()}
 function renderList(){var l=load('orders',[]);$('cnt').textContent=l.length?l.length+' طلبية':'';
   $('list').innerHTML=l.length?l.map(function(o){return'<div class="card ord" style="margin-bottom:8px"><div><b>'+esc(o.pharm)+'</b><div class="mut">'+o.items.length+' مادة · '+new Date(o.date).toLocaleDateString('ar-IQ')+'</div></div><div class="btns"><button class="sec" onclick="openOrder('+o.id+')">فتح</button><button class="dng" onclick="delOrder('+o.id+')">حذف</button></div></div>'}).join(''):'<div class="mut">لا توجد طلبيات محفوظة بعد.</div>'}
 
 suggest($('pharm'),function(){return PH},3);
 hydrate();loadLists();
 applyTheme();
+tipsUI();
 renderSet();
 renderComps();
 renderList();
